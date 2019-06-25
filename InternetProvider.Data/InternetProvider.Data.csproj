@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -56,12 +59,21 @@
   <ItemGroup>
     <Compile Include="EntityModels\AccountEntity.cs" />
     <Compile Include="EntityModels\BaseEntity.cs" />
+    <Compile Include="EntityModels\RoleEntity.cs" />
     <Compile Include="EntityModels\ServiceEntity.cs" />
     <Compile Include="EntityModels\TariffEntity.cs" />
     <Compile Include="EntityModels\UserEntity.cs" />
     <Compile Include="InetContext.cs" />
+    <Compile Include="Migrations\201906250822077_Initial.cs" />
+    <Compile Include="Migrations\201906250822077_Initial.Designer.cs">
+      <DependentUpon>201906250822077_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AccountRepository.cs" />
+    <Compile Include="Repositories\ServiceRepository.cs" />
+    <Compile Include="Repositories\TariffRepository.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InternetProvider.Logic\InternetProvider.Logic.csproj">
@@ -73,6 +85,10 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201906250822077_Initial.resx">
+      <DependentUpon>201906250822077_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

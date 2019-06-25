@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using InternetProvider.Data.EntityModels;
@@ -11,15 +13,13 @@ namespace InternetProvider.Data
 {
    public class InetContext : IdentityDbContext<UserEntity>
     {
+        public InetContext():base("InternetProviderDb") { }
         public InetContext(string connectionString)
-            : base(connectionString, throwIfV1Schema: false)
+            : base(connectionString)
         {
-
         }
         public DbSet<TariffEntity> TariffEntities { get; set; }
-        public DbSet<ServiceEntity> ServiceEntites { get; set; }
+        public DbSet<ServiceEntity> ServiceEntities { get; set; }
         public DbSet<AccountEntity> AccountEntities { get; set; }
-        public DbSet<UserEntity> UserEntities { get; set; }
-       
     }
 }

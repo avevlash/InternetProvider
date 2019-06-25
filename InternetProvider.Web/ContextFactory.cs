@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
-using System.IO;
 using System.Linq;
 using System.Web;
 using InternetProvider.Data;
 
 namespace InternetProvider.Web
 {
-    public class DesignTimeContextFactory:IDbContextFactory<InetContext>
+    public class ContextFactory:IDbContextFactory<InetContext>
     {
         public InetContext Create()
         {
