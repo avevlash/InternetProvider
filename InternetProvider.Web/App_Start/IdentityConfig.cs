@@ -13,6 +13,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using InternetProvider.Web.Models;
+using System.Net.Mail;
+using System.Net;
 
 namespace InternetProvider.Web
 {
@@ -20,7 +22,25 @@ namespace InternetProvider.Web
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
+            var client = new SmtpClient
+            {
+                Host = "smtp.mailtrap.io",
+                Port = 2525,
+                Credentials = new NetworkCredential("31e60a1b12b326", "e559aea49fc6aa"),
+                EnableSsl = true,
+            };
+
+            var @from = new MailAddress("no-reply@internet-provider.info", "Administration");
+            var to = new MailAddress(message.Destination);
+
+            var mail = new MailMessage(@from, to)
+            {
+                Subject = message.Subject,
+                Body = message.Body,
+                IsBodyHtml = true,
+            };
+
+            client.Send(mail);
             return Task.FromResult(0);
         }
     }
@@ -34,6 +54,7 @@ namespace InternetProvider.Web
     //    }
     //}
 
+   
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : UserManager<UserEntity>
     {

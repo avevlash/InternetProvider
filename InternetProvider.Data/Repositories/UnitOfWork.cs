@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using InternetProvider.Data.EntityModels;
 using InternetProvider.Logic.DTO;
 using InternetProvider.Logic.Interfaces;
+using Microsoft.AspNet.Identity;
 
 namespace InternetProvider.Data.Repositories
 {
@@ -17,7 +19,9 @@ namespace InternetProvider.Data.Repositories
         private AccountRepository _accountRepository;
         private ServiceRepository _serviceRepository;
         private TariffRepository _tariffRepository;
-        
+        private UserTariffRepository _userTariffRepository;
+        private UserRepository _userRepository;
+
         public UnitOfWork(string connString, IMapper mapper)
         {
             _context = new InetContext(connString);
@@ -42,6 +46,28 @@ namespace InternetProvider.Data.Repositories
                     _tariffRepository = new TariffRepository(_context, _mapper);
                 }
                 return _tariffRepository;
+            }
+        }
+        public IRepository<UserTariffDTO> UserTariffs
+        {
+            get
+            {
+                if (_userTariffRepository == null)
+                {
+                    _userTariffRepository = new UserTariffRepository(_context, _mapper);
+                }
+                return _userTariffRepository;
+            }
+        }
+        public IRepository<UserDTO> Users
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new UserRepository(_context, _mapper);
+                }
+                return _userRepository;
             }
         }
 
@@ -74,4 +100,5 @@ namespace InternetProvider.Data.Repositories
             _context.SaveChanges();
         }
     }
+    
 }

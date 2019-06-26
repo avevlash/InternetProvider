@@ -10,7 +10,7 @@ namespace InternetProvider.Logic.DTO
     {
         public Guid Id { get; set; }
         public virtual UserDTO User { get; set; }
-        public virtual List<TariffDTO> Tariffs { get; set; }
+        public virtual List<UserTariffDTO> Tariffs { get; set; }
         public double Balance { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace InternetProvider.Data
             : base(connectionString)
         {
         }
+        public DbSet<UserTariffEntity> UserTariffEntities { get; set; }
         public DbSet<TariffEntity> TariffEntities { get; set; }
         public DbSet<ServiceEntity> ServiceEntities { get; set; }
         public DbSet<AccountEntity> AccountEntities { get; set; }

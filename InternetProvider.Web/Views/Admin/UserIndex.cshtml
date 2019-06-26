@@ -1,0 +1,26 @@
+﻿@model List<InternetProvider.Web.Models.UserListViewModel>
+@{
+    ViewBag.Title = "Список пользователей";
+}
+
+<h2>Заявки на регистрацию в системе</h2>
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>&nbsp;</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Email</td>
+                    <td>@Html.ActionLink("Зарегистрировать", "CreateUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-default" })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

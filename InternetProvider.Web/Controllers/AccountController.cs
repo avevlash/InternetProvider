@@ -54,25 +54,18 @@ namespace InternetProvider.Web.Controllers
         }
 
         // GET: /Account/UserPage
-        public async Task<ActionResult> UserPage(ManageMessageId? message)
+        public ActionResult UserPage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
             var userId = User.Identity.GetUserId();
             var model = new UserPageViewModel
             {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                HasPassword = HasPassword()
             };
             return View(model);
         }
@@ -161,16 +154,15 @@ namespace InternetProvider.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new UserEntity { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //await UserManager.SendEmailAsync(user.Id, "Подтвердите свой аккаунт", "Подтвердите свой аккаунт, нажав  <a href=\"" + callbackUrl + "\">сюда</a>");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -179,6 +171,11 @@ namespace InternetProvider.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public ActionResult Payment()
+        {
+            return View();
         }
 
         //
@@ -253,6 +250,23 @@ namespace InternetProvider.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
+            //var user = await UserManager.FindByNameAsync(model.Email);
+            //if (user == null)
+            //{
+            //    // Don't reveal that the user does not exist
+            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
+            //}
+            //var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            //if (result.Succeeded)
+            //{
+            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
+            //}
+            //AddErrors(result);
+            //return View();
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -266,7 +280,9 @@ namespace InternetProvider.Web.Controllers
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                // Automatic sign in after password has been reset.
+                SignInManager.SignIn(user, false, false);
+                return RedirectToAction("Index", "Home");
             }
             AddErrors(result);
             return View();

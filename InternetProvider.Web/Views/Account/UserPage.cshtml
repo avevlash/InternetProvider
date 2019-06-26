@@ -1,23 +1,23 @@
 ﻿@model InternetProvider.Web.Models.UserPageViewModel
-@{
-    ViewBag.Title = "Manage";
-}
 
-<h2>@ViewBag.Title.</h2>
+<h2>Кабинет пользователя</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
-    <h4>Change your account settings</h4>
+    <h4>Настройки аккаунта</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Password:</dt>
+        <dt>Пароль:</dt>
         <dd>
             [
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Change your password", "ChangePassword")
+                @Html.ActionLink("Изменить пароль", "ChangePassword")
             }
             ]
         </dd>
-       </dl>
+        <dt>Остаток на счету:</dt>
+        <dd>@model.Balance </dd>
+        <dd>@Html.ActionLink("Пополнить баланс", "Payment")</dd>
+    </dl>
 </div>

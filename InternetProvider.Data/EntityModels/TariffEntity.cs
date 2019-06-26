@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -13,5 +14,13 @@ namespace InternetProvider.Data.EntityModels
         public double Price { get; set; }
         public string TariffName { get; set; }
         public string TariffProperties { get; set; }
+        public long ValidityPeriodTicks { get; set; }
+        [NotMapped]
+        public TimeSpan ValidityPeriod
+        {
+            get { return TimeSpan.FromTicks(ValidityPeriodTicks); }
+            set { ValidityPeriodTicks = value.Ticks; }
+        }
+
     }
 }

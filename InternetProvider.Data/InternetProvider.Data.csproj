@@ -63,6 +63,7 @@
     <Compile Include="EntityModels\ServiceEntity.cs" />
     <Compile Include="EntityModels\TariffEntity.cs" />
     <Compile Include="EntityModels\UserEntity.cs" />
+    <Compile Include="EntityModels\UserTariffEntity.cs" />
     <Compile Include="InetContext.cs" />
     <Compile Include="Migrations\201906250822077_Initial.cs" />
     <Compile Include="Migrations\201906250822077_Initial.Designer.cs">
@@ -74,6 +75,8 @@
     <Compile Include="Repositories\ServiceRepository.cs" />
     <Compile Include="Repositories\TariffRepository.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\UserTariffRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InternetProvider.Logic\InternetProvider.Logic.csproj">

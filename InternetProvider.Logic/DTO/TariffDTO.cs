@@ -13,5 +13,11 @@ namespace InternetProvider.Logic.DTO
         public double Price { get; set; }
         public string TariffName { get; set; }
         public string TariffProperties { get; set; }
+        public long ValidityPeriodTicks { get; set; }
+        public TimeSpan ValidityPeriod
+        {
+            get { return TimeSpan.FromTicks(ValidityPeriodTicks); }
+            set { ValidityPeriodTicks = value.Ticks; }
+        }
     }
 }

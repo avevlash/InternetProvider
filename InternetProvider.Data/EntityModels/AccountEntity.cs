@@ -9,7 +9,7 @@ namespace InternetProvider.Data.EntityModels
     public class AccountEntity:BaseEntity
     {
         public virtual UserEntity User { get; set; }
-        public virtual List<TariffEntity> Tariffs { get; set; }
+        public virtual List<UserTariffEntity> Tariffs { get; set; }
         public double Balance { get; set; }
     }
 }

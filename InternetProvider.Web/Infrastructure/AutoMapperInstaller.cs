@@ -29,6 +29,8 @@ namespace InternetProvider.Web.Infrastructure
                     configuration.CreateMap<TariffEntity, TariffDTO>();
                     configuration.CreateMap<ServiceEntity, ServiceDTO>();
                     configuration.CreateMap<AccountEntity, AccountDTO>();
+                    configuration.CreateMap<UserEntity, UserDTO>();
+                    configuration.CreateMap<UserTariffEntity, UserTariffDTO>();
                 });
             }).LifestyleSingleton());
 

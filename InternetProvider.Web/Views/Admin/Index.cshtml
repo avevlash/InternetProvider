@@ -1,0 +1,31 @@
+﻿@model List<InternetProvider.Web.Models.UserViewModel>
+@{
+    ViewBag.Title = "Пользователи";
+}
+
+<h2>Список пользователей</h2>
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>Номер договора</th>
+                <th>Тарифы</th>
+                <th>Заблокирован</th>
+                <th>&nbsp;</th>
+            </tr>
+                    </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@item.Email</td>
+                <td>@item.AccountNumber</td>
+                <td>@item.Tariffs</td>
+                <td>@(item.IsBlocked?"Да":"Нет")</td>
+                <td>  @(item.IsBlocked?Html.ActionLink("Разблокировать", "BlockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-default" }):Html.ActionLink("Заблокировать", "BlockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-danger" }))</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
