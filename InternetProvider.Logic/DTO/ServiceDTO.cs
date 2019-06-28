@@ -12,6 +12,7 @@ namespace InternetProvider.Logic.DTO
         public string ServiceName { get; set; }
         public string Properties { get; set; }
         public int CurrentUsers { get; set; }
+        public bool IsInUse { get; set; }
         public virtual List<TariffDTO> TariffList { get; set; }
     }
 }

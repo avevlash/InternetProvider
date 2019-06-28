@@ -79,7 +79,13 @@ namespace InternetProvider.Web.Controllers
 
         public ActionResult UserIndex()
         {
-            return View();
+            List<UserListViewModel> model = new List<UserListViewModel>();
+            var users = _userService.GetUnregistratedUsers();
+            foreach(var item in users)
+            {
+                model.Add(new UserListViewModel() { Id = item.Item1, Email = item.Item2 });
+            }
+            return View(model);
         }
 
         public async Task<ActionResult> BlockUser(string userId)
@@ -111,6 +117,8 @@ namespace InternetProvider.Web.Controllers
             if(result.Succeeded)
                 await SendActivationMail(user.Id);
         }
+
+        #region Helpers
         private async Task SendActivationMail(string userId)
         {
             string code = await UserManager.GeneratePasswordResetTokenAsync(userId);
@@ -129,5 +137,6 @@ namespace InternetProvider.Web.Controllers
 
             await UserManager.SendEmailAsync(userId, "Активация аккаунта", body);
         }
+        #endregion
     }
 }

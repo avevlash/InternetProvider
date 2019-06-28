@@ -1,0 +1,49 @@
+﻿@model List<InternetProvider.Logic.DTO.ServiceDTO>
+
+    <h2>Список всех услуг провайдера</h2>
+    <hr />
+    <div class="row">
+        
+            @Html.ActionLink("Добавить услугу", "AddService", "Content", new { }, new { @class = "btn btn-default" })
+        
+        <table>
+            @foreach (var service in Model)
+            {
+                <tr>
+                    <td>Название услуги:</td>
+                    <td>@service.ServiceName</td>
+                </tr>
+                <tr>
+                    <td>Описание:</td>
+                    <td>@service.Properties</td>
+                </tr>
+                <tr>
+                    <td>Количество пользователей:</td>
+                    <td>@service.CurrentUsers</td>
+                </tr>
+                <tr>
+                    <td>В использовании:</td>
+                    <td>@(service.IsInUse ? "Да" : "Нет")</td>
+                </tr>
+                <tr>Тарифы услуги:</tr>
+                <tr>
+                    @foreach (var tariff in service.TariffList)
+                    {
+                        <td>
+                            @tariff.TariffName
+                            <br />
+                            @($"{tariff.Price:0.00} грн")
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ActionLink("Изменить услугу", "EditService", "Content", new { id = service.Id }, new { @class = "btn btn-default" })
+                    </td>
+                    <td>
+                        @Html.ActionLink("Убрать услугу", "RemoveService", "Content", new { id = service.Id }, new { @class = "btn btn-danger" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>

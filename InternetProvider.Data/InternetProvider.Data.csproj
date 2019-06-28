@@ -65,9 +65,9 @@
     <Compile Include="EntityModels\UserEntity.cs" />
     <Compile Include="EntityModels\UserTariffEntity.cs" />
     <Compile Include="InetContext.cs" />
-    <Compile Include="Migrations\201906250822077_Initial.cs" />
-    <Compile Include="Migrations\201906250822077_Initial.Designer.cs">
-      <DependentUpon>201906250822077_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201906280824022_Initial.cs" />
+    <Compile Include="Migrations\201906280824022_Initial.Designer.cs">
+      <DependentUpon>201906280824022_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,8 +89,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201906250822077_Initial.resx">
-      <DependentUpon>201906250822077_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201906280824022_Initial.resx">
+      <DependentUpon>201906280824022_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

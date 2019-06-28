@@ -10,5 +10,6 @@ namespace InternetProvider.Logic.Interfaces
     public interface IUserService
     {
         List<UserDTO> GetAllUsers();
+        List<Tuple<string, string>> GetUnregistratedUsers();
     }
 }

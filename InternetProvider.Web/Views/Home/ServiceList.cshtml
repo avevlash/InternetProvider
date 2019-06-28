@@ -1,0 +1,23 @@
+﻿@model List<InternetProvider.Web.Models.ServiceListViewModel>
+<div class="jumbotron">
+    <h1>Список услуг и тарифов на @DateTime.Now.Year год</h1>
+    <p class="lead">Данные услуги являются актуальными. 
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <span>@Html.ActionLink("Войдите","Login","Account"), чтобы подключить услугу</span>
+        }
+    </p>
+</div>
+<div class="row">
+    @foreach (var service in Model ?? new List<InternetProvider.Web.Models.ServiceListViewModel>() { new InternetProvider.Web.Models.ServiceListViewModel() { ServiceName = "Internet", Properties = "Lorem ipsum dolor sit amet sonsiculum", MinPrice = 30, Id = "blah" } })
+    {
+        <div class="col-lg-4 com-md-6 col-sm-10">
+            <div class="text-center">
+                <p>@service.ServiceName</p>
+            </div>
+            <p>@service.Properties</p>
+            <p class="text-right">Цены от @($"{service.MinPrice:0.00} грн").  @Html.ActionLink("Подробнее","ServiceDetails", new { Id = service.Id }, new { @class = "btn btn-primary" })</p>
+        </div>
+    }
+
+</div>

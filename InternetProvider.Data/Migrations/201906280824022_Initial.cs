@@ -20,6 +20,22 @@ namespace InternetProvider.Data.Migrations
                 .Index(t => t.User_Id);
             
             CreateTable(
+                "dbo.UserTariffEntities",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        BeginDate = c.DateTime(nullable: false),
+                        EndDate = c.DateTime(nullable: false),
+                        Tariff_Id = c.Guid(),
+                        AccountEntity_Id = c.Guid(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.TariffEntities", t => t.Tariff_Id)
+                .ForeignKey("dbo.AccountEntities", t => t.AccountEntity_Id)
+                .Index(t => t.Tariff_Id)
+                .Index(t => t.AccountEntity_Id);
+            
+            CreateTable(
                 "dbo.TariffEntities",
                 c => new
                     {
@@ -27,14 +43,12 @@ namespace InternetProvider.Data.Migrations
                         Price = c.Double(nullable: false),
                         TariffName = c.String(),
                         TariffProperties = c.String(),
+                        ValidityPeriodTicks = c.Long(nullable: false),
                         Service_Id = c.Guid(),
-                        AccountEntity_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.ServiceEntities", t => t.Service_Id)
-                .ForeignKey("dbo.AccountEntities", t => t.AccountEntity_Id)
-                .Index(t => t.Service_Id)
-                .Index(t => t.AccountEntity_Id);
+                .Index(t => t.Service_Id);
             
             CreateTable(
                 "dbo.ServiceEntities",
@@ -44,6 +58,7 @@ namespace InternetProvider.Data.Migrations
                         ServiceName = c.String(),
                         Properties = c.String(),
                         CurrentUsers = c.Int(nullable: false),
+                        IsInUse = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -126,7 +141,8 @@ namespace InternetProvider.Data.Migrations
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.TariffEntities", "AccountEntity_Id", "dbo.AccountEntities");
+            DropForeignKey("dbo.UserTariffEntities", "AccountEntity_Id", "dbo.AccountEntities");
+            DropForeignKey("dbo.UserTariffEntities", "Tariff_Id", "dbo.TariffEntities");
             DropForeignKey("dbo.TariffEntities", "Service_Id", "dbo.ServiceEntities");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
@@ -134,8 +150,9 @@ namespace InternetProvider.Data.Migrations
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
-            DropIndex("dbo.TariffEntities", new[] { "AccountEntity_Id" });
             DropIndex("dbo.TariffEntities", new[] { "Service_Id" });
+            DropIndex("dbo.UserTariffEntities", new[] { "AccountEntity_Id" });
+            DropIndex("dbo.UserTariffEntities", new[] { "Tariff_Id" });
             DropIndex("dbo.AccountEntities", new[] { "User_Id" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.AspNetUserRoles");
@@ -144,6 +161,7 @@ namespace InternetProvider.Data.Migrations
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.ServiceEntities");
             DropTable("dbo.TariffEntities");
+            DropTable("dbo.UserTariffEntities");
             DropTable("dbo.AccountEntities");
         }
     }

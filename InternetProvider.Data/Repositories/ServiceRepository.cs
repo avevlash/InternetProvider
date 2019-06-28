@@ -23,7 +23,7 @@ namespace InternetProvider.Data.Repositories
         }
         public IEnumerable<ServiceDTO> GetAll()
         {
-            var services = _context.ServiceEntities.ToList();
+            var services = _context.ServiceEntities.Include("TariffList").ToList();
             var dtos = _mapper.Map<IEnumerable<ServiceDTO>>(services);
             return dtos;
         }
