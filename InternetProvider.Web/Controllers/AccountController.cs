@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InternetProvider.Web.Models;
+using InternetProvider.Logic.Interfaces;
 
 namespace InternetProvider.Web.Controllers
 {
@@ -18,15 +19,18 @@ namespace InternetProvider.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private ApplicationRoleManager _roleManager;
+        private readonly IAccountService _accountService;
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager, IAccountService accountService )
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            RoleManager = roleManager;
+            _accountService = accountService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -52,6 +56,17 @@ namespace InternetProvider.Web.Controllers
                 _userManager = value;
             }
         }
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
 
         // GET: /Account/UserPage
         public ActionResult UserPage(ManageMessageId? message)
@@ -65,7 +80,8 @@ namespace InternetProvider.Web.Controllers
             var userId = User.Identity.GetUserId();
             var model = new UserPageViewModel
             {
-                HasPassword = HasPassword()
+                HasPassword = HasPassword(),
+                Balance = _accountService.GetUserAccount(userId).Balance
             };
             return View(model);
         }
@@ -98,9 +114,9 @@ namespace InternetProvider.Web.Controllers
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
-               case SignInStatus.Failure:
+                case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Неудачная попытка входа.");
                     return View(model);
             }
         }
@@ -153,6 +169,11 @@ namespace InternetProvider.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(await UserManager.FindByNameAsync(model.Email).ConfigureAwait(false) != null)
+                {
+                    ModelState.AddModelError("", "Данный адрес почты уже занят.");
+                    return View(model);
+                }
                 var user = new UserEntity { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -219,7 +240,7 @@ namespace InternetProvider.Web.Controllers
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                await UserManager.SendEmailAsync(user.Id, "Восстановление пароля", "Восстановите пароль, нажав <a href=\"" + callbackUrl + "\">сюда</a>");
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 

@@ -10,7 +10,9 @@ namespace InternetProvider.Logic.Interfaces
     public interface IServService
     {
         IEnumerable<ServiceDTO> GetAllServices();
+        ServiceDTO GetServiceById(string id);
         void AddService(ServiceDTO service);
+        void UpdateService(ServiceDTO service);
         void RemoveService(string serviceId);
         void ChangeTariffList(string serviceId, IEnumerable<TariffDTO> tariffs);
     }

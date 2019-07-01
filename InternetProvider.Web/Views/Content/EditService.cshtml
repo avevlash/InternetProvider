@@ -1,7 +1,152 @@
-﻿
-@{
-    ViewBag.Title = "EditService";
+﻿@model List<InternetProvider.Web.Models.AddServiceViewModel>
+<h2>Редактирование услуги</h2>
+
+<div class="row">
+    @using (Html.BeginForm("AddService", "Content",  FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m=>m.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.ServiceName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.ServiceName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ServiceName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Properties, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Properties, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Properties, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.TariffList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.ValidationMessageFor(model => model.TariffList, "", new { @class = "text-danger" })
+                @for (int i = 0; i < Model.TariffList.Count; i++)
+                {
+                    <div class="form-row" id="form_group_@i">
+                        <div class="col-8">
+                            <label for="TariffList[@i]_TariffName">Название тарифа</label>
+                            <input type="text" autocomplete="off" required="" name="TariffList[@i].TariffName" id="TariffList[@i]_TariffName" value="@Model.TariffList[i].TariffName" />
+                            <label for="TariffList[@i]_TariffProperties">Описание тарифа</label>
+                            <input type="text" autocomplete="off" required="" name="TariffList[@i].TariffProperties" id="TariffList[@i]_TariffProperties" value="@Model.TariffList[i].TariffProperties" />
+                            <label for="TariffList[@i]_Price">Стоимость тарифа</label>
+                            <input type="number" required="" step="0.1" name="TariffList[@i].Price" id="TariffList[@i]_Price" value="@Model.TariffList[i].Price" />
+                            <label for="TariffList[@i]_ValidityPeriod">Длительность тарифа(в днях)</label>
+                            <input type="number" step="1" required="" name="TariffList[@i].ValidityPeriod" id="TariffList[@i]_ValidityPeriod" value="@Model.TariffList[i].ValidityPeriod" />
+                        </div>
+                        <div class="col-3">
+                            <button id="@("btn"+i)" type="button" class="btn btn-danger" onclick="deleteTariff">Удалить</button>
+                        </div>
+                    </div>
+                }
+                <button type="button" class="btn btn-primary" id="add_new_tariff">Добавить тариф</button>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить услугу</button>
+    }
+</div>
+<script type="text/javascript">
+    function deleteTariff() {
+    var items = $('.form-row');
+    for (i = 0; i < items.length; i++) {
+        if (items[i].id[items[i].id.length - 1] === this.id[this.id.length - 1]) {
+            items[i].remove();
+        }
+    }
+        let tariffnames = $(".tariff-name");
+        let tariffprops = $(".tariff-props");
+        let tariffprices = $(".tariff-price");
+        let tariffval = $(".tariff-validity");
+    for (i = 0; i < answersText.length; i++) {
+       tariffnames[i].name = 'TariffList[' + index + '].TariffName';
+       tariffnames[i].id = 'TariffList[' + index + ']_TariffName';
+       tariffprops[i].name = 'TariffList[' + index + '].TariffProperties';
+       tariffprops[i].id = 'TariffList[' + index + ']_TariffProperties';
+       tariffprices[i].name = 'TariffList[' + index + '].Price';
+       tariffprices[i].id = 'TariffList[' + index + ']_Price';
+       tariffval[i].name = 'TariffList[' + index + '].ValidityPeriod';
+       tariffval[i].id = 'TariffList[' + index + ']_ValidityPeriod';
+    }
 }
 
-<h2>EditService</h2>
+$('#add_new_tariff').click(function () {
+    var index = $('.form-row').length;
+    var div = document.createElement('div');
+    div.classList.add('form-row');
+    div.id = 'form_group_'+index;
+    var divcol = document.createElement('div');
+    divcol.classList.add('col-8');
+    var divcol3 = document.createElement('div');
+    divcol3.classList.add('col-3');
+    var btnDelete = document.createElement('button');
+    btnDelete.id = 'btn' + index;
+    btnDelete.type = 'button';
+    btnDelete.className = 'btn btn-danger';
+    btnDelete.innerText = "Удалить";
+    btnDelete.onclick = deleteTariff;
+    divcol3.appendChild(btnDelete);
 
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("required", '""');
+    input.name = 'TariffList[' + index + '].TariffName';
+    input.id = 'TariffList[' + index + ']_TariffName';
+    input.classList.add('form-control');
+    input.classList.add('tariff-name');
+    var label = document.createElement('label');
+    label.htmlFor = input.id;
+    label.innerText = "Название тарифа";
+    divcol.appendChild(label);
+    divcol.appendChild(input);
+    var input2 = document.createElement('input');
+    input2.type = 'text';
+    input2.setAttribute("autocomplete", "off");
+    input2.setAttribute("required", '""');
+    input2.name = 'TariffList[' + index + '].TariffProperties';
+    input2.id = 'TariffList[' + index + ']_TariffProperties';
+    input2.classList.add('form-control');
+    input2.classList.add('tariff-props');
+    var label2 = document.createElement('label');
+    label2.htmlFor = input2.id;
+    label2.innerText = "Описание тарифа";
+    divcol.appendChild(label2);
+    divcol.appendChild(input2);
+    var input3 = document.createElement('input');
+    input3.type = 'number';
+    input3.setAttribute("step", "0.1");
+    input3.setAttribute("required", '""');
+    input3.name = 'TariffList[' + index + '].Price';
+    input3.id = 'TariffList[' + index + ']_Price';
+    input3.classList.add('form-control');
+    input3.classList.add('tariff-price');
+    var label3 = document.createElement('label');
+    label3.htmlFor = input3.id;
+    label3.innerText = "Стоимость тарифа";
+    divcol.appendChild(label3);
+    divcol.appendChild(input3);
+    var input4 = document.createElement('input');
+    input4.type = 'number';
+    input4.setAttribute("step", "1");
+    input4.setAttribute("required", '""');
+    input4.name = 'TariffList[' + index + '].ValidityPeriod';
+    input4.id = 'TariffList[' + index + ']_ValidityPeriod';
+    input4.classList.add('form-control');
+    input4.classList.add('tariff-validity');
+    var label4 = document.createElement('label');
+    label4.htmlFor = input4.id;
+    label4.innerText = "Длительность тарифа(в днях)";
+    divcol.appendChild(label4);
+    divcol.appendChild(input4);
+    div.appendChild(divcol);
+    div.appendChild(divcol3);
+    $('#add_new_tariff').before(div);
+
+});
+
+
+
+</script>

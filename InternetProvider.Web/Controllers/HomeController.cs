@@ -11,7 +11,7 @@ namespace InternetProvider.Web.Controllers
     public class HomeController : Controller
     {
         private readonly IServService _servService;
-        public HomeController() { }
+        //public HomeController() { }
         public HomeController(IServService service)
         {
             _servService = service;

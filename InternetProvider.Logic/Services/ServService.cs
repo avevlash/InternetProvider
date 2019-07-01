@@ -17,10 +17,18 @@ namespace InternetProvider.Logic.Services
             _store = unit;
         }
         public IEnumerable<ServiceDTO> GetAllServices() => _store.Services.GetAll();
-        
+
+        public ServiceDTO GetServiceById(string id) => _store.Services.Get(id);
+
         public void AddService(ServiceDTO service)
         {
             _store.Services.Create(service);
+            _store.Save();
+        }
+
+        public void UpdateService(ServiceDTO service)
+        {
+            _store.Services.Update(service);
             _store.Save();
         }
 

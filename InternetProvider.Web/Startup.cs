@@ -19,18 +19,8 @@ namespace InternetProvider.Web
     {
         public void Configuration(IAppBuilder app)
         {
+            //IoCContainer.Setup();
             ConfigureAuth(app);
-            app.CreatePerOwinContext(BootstrapContainer().BeginScope);
-        }
-        private IWindsorContainer BootstrapContainer()
-        {
-            var container = new WindsorContainer();
-            container.Install(new AutoMapperInstaller());
-            container.Register(Component.For<InetContext>().LifestyleScoped(),
-            Classes.FromAssembly(Assembly.GetAssembly(typeof(ServiceRepository))).InSameNamespaceAs<ServiceRepository>().WithService.DefaultInterfaces().LifestyleTransient(),
-            Classes.FromAssembly(Assembly.GetAssembly(typeof(AccountService))).InSameNamespaceAs<AccountService>().WithService.DefaultInterfaces().LifestyleTransient(),
-            Classes.FromThisAssembly().BasedOn<IController>().LifestyleTransient());
-            return container;
-        }
+         }
     }
 }

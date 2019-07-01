@@ -14,10 +14,7 @@ namespace InternetProvider.Data.Migrations
 
         protected override void Seed(InternetProvider.Data.InetContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
+           
         }
     }
 }

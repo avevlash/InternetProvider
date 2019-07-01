@@ -129,4 +129,17 @@ namespace InternetProvider.Web
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
     }
+    public class ApplicationRoleManager : RoleManager<RoleEntity, string>
+    {
+        public ApplicationRoleManager(RoleStore<RoleEntity> store)
+            : base(store)
+        {
+        }
+
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            var manager = new ApplicationRoleManager(new RoleStore<RoleEntity>(context.Get<InetContext>()));
+            return manager;
+        }
+    }
 }
