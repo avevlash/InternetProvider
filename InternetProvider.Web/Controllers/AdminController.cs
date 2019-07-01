@@ -22,15 +22,15 @@ namespace InternetProvider.Web.Controllers
         private ApplicationUserManager _userManager;
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
-        public AdminController()
-        {
+        //public AdminController()
+        //{
             
-        }
+        //}
 
-        public AdminController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IAccountService accountService, IUserService userService)
+        public AdminController(IAccountService accountService, IUserService userService)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
+            //UserManager = userManager;
+            //SignInManager = signInManager;
             _accountService = accountService;
             _userService = userService;
         }
@@ -61,50 +61,66 @@ namespace InternetProvider.Web.Controllers
         
         public ActionResult Index()
         {
-            var users = _userService.GetAllUsers();
-            var model = new List<UserViewModel>();
-            foreach(var user in users)
+            var users = _userService.GetRegisteredUsers();
+            if (users != null)
             {
-                model.Add(new UserViewModel()
+                var model = new List<UserViewModel>();
+                foreach (var user in users)
                 {
-                    AccountNumber = user.AccountNumber,
-                    Email = user.Email,
-                    Id = user.Id,
-                    IsBlocked = user.LockoutEndDateUtc > DateTime.Now?true:false, 
-                    Tariffs = string.Join(", ",_accountService.GetUserAccount(user.Id).Tariffs.Select(x=>x.Tariff.TariffName))
-                });
+                    model.Add(new UserViewModel()
+                    {
+                        AccountNumber = user.AccountNumber,
+                        Email = user.Email,
+                        Id = user.Id,
+                        IsBlocked = user.LockoutEndDateUtc > DateTime.Now ? true : false,
+                        Tariffs = string.Join(", ", _accountService.GetUserAccount(user.Id).Tariffs.Select(x => x.Tariff.TariffName))
+                    });
+                }
+                return View(model);
             }
-            return View(model);
+            else return View();
         }
 
         public ActionResult UserIndex()
         {
-            List<UserListViewModel> model = new List<UserListViewModel>();
             var users = _userService.GetUnregistratedUsers();
-            foreach(var item in users)
+            if (users != null)
             {
-                model.Add(new UserListViewModel() { Id = item.Item1, Email = item.Item2 });
+                List<UserListViewModel> model = new List<UserListViewModel>();
+
+                foreach (var item in users)
+                {
+                    model.Add(new UserListViewModel() { Id = item.Item1, Email = item.Item2 });
+                }
+                return View(model);
             }
-            return View(model);
+            else return View();
         }
 
         public async Task<ActionResult> BlockUser(string userId)
         {
             var user = await UserManager.FindByIdAsync(userId).ConfigureAwait(false);
-            user.LockoutEndDateUtc = DateTime.Now.AddYears(1);
-            await UserManager.UpdateAsync(user).ConfigureAwait(false);
-            return RedirectToAction("Index");
+            if (user != null)
+            {
+                user.LockoutEndDateUtc = DateTime.Now.AddYears(1);
+                await UserManager.UpdateAsync(user).ConfigureAwait(false);
+                return RedirectToAction("Index");
+            }
+            else return View("Error");
         }
 
         public async Task<ActionResult> UnblockUser(string userId)
         {
             var user = await UserManager.FindByIdAsync(userId).ConfigureAwait(false);
-            user.LockoutEndDateUtc = DateTime.Now.AddDays(-1);
-            await UserManager.UpdateAsync(user).ConfigureAwait(false);
-            return RedirectToAction("Index");
+            if (user != null)
+            {
+                user.LockoutEndDateUtc = DateTime.Now.AddDays(-1);
+                await UserManager.UpdateAsync(user).ConfigureAwait(false);
+                return RedirectToAction("Index");
+            }
+            else return View("Error");
         }
 
-        //GET: Admin/CreateUser
         public async Task CreateUser(string userId)
         {
             var rand = new Random();
@@ -114,8 +130,11 @@ namespace InternetProvider.Web.Controllers
             var password = Membership.GeneratePassword(8, 0);
             var res = await UserManager.UpdateAsync(user);
             var result = await UserManager.CreateAsync(user, password);
-            if(result.Succeeded)
+            if (result.Succeeded)
+            {
+                _accountService.RegisterAccount(user.Id);
                 await SendActivationMail(user.Id);
+            }
         }
 
         #region Helpers

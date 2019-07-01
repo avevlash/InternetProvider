@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using InternetProvider.Web.Models;
 using InternetProvider.Logic.Interfaces;
+using InternetProvider.Logic.DTO;
+using System.Collections.Generic;
 
 namespace InternetProvider.Web.Controllers
 {
@@ -21,16 +23,18 @@ namespace InternetProvider.Web.Controllers
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
         private readonly IAccountService _accountService;
-        public AccountController()
-        {
-        }
+        private readonly IServService _servService;
+        //public AccountController()
+        //{
+        //}
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager, IAccountService accountService )
+        public AccountController(IAccountService accountService, IServService servService )
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
-            RoleManager = roleManager;
+            //UserManager = userManager;
+            //SignInManager = signInManager;
+            //RoleManager = roleManager;
             _accountService = accountService;
+            _servService = servService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -68,21 +72,61 @@ namespace InternetProvider.Web.Controllers
             }
         }
 
+        public ActionResult SubscribeToTariff(string id)
+        {
+            try
+            {
+                var tariff = _servService.GetTariffById(id);
+                var account = _accountService.GetUserAccount(User.Identity.GetUserId());
+                _accountService.AddTariffs(account.Id.ToString(), new TariffDTO[] { tariff });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("UserPage", new { Message =  ManageMessageId.Error });
+            }
+            return RedirectToAction("UserPage", new {  Message = ManageMessageId.TariffAddedSuccess});
+        }
+
+        public ActionResult UnsubscribeFromTariff(string id)
+        {
+            try
+            {
+                var tariff = _servService.GetTariffById(id);
+                var account = _accountService.GetUserAccount(User.Identity.GetUserId());
+                _accountService.RemoveTariffs(account.Id.ToString(), new TariffDTO[] { tariff });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("UserPage", new { Message = ManageMessageId.Error });
+            }
+            return RedirectToAction("UserPage", new { Message = ManageMessageId.TariffRemovedSuccess });
+        }
+
         // GET: /Account/UserPage
         public ActionResult UserPage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
+                message == ManageMessageId.ChangePasswordSuccess ? "Ваш пароль изменен."
+                : message == ManageMessageId.SetPasswordSuccess ? "Ваш пароль установлен."
+                : message == ManageMessageId.Error ? "Произошла ошибка."
+                : message == ManageMessageId.TariffAddedSuccess ? "Тариф успешно добавлен"
+                 : message == ManageMessageId.TariffRemovedSuccess ? "Тариф успешно удален"
                 : "";
 
             var userId = User.Identity.GetUserId();
+            var account = _accountService.GetUserAccount(userId);
             var model = new UserPageViewModel
             {
                 HasPassword = HasPassword(),
-                Balance = _accountService.GetUserAccount(userId).Balance
+                Balance = account.Balance,
+                Fee = account.Tariffs.Sum(x => x.Tariff.Price),
+                PaymentDate = account.Tariffs.Min(x => x.EndDate),
+                Tariffs = new List<Tuple<string, string>>()
             };
+            foreach(var item in account.Tariffs)
+            {
+                model.Tariffs.Add(new Tuple<string, string>(item.Tariff.Id.ToString(), item.Tariff.TariffName));
+            }
             return View(model);
         }
 
@@ -106,12 +150,23 @@ namespace InternetProvider.Web.Controllers
             {
                 return View(model);
             }
-
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    {
+                        var user = UserManager.Find(model.Email, model.Password);
+                        var account = _accountService.GetUserAccount(user.Id);
+                        if(_accountService.PayFees(account.Id.ToString()))
+                            return RedirectToLocal(returnUrl);
+                        else
+                        {
+                            user.LockoutEndDateUtc = DateTime.Now.AddYears(1);
+                            await UserManager.UpdateAsync(user).ConfigureAwait(false);
+                            ModelState.AddModelError("", "На счету имеются задолженности. Произведите оплату для разблокировки.");
+                            return View(model);
+                        }
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.Failure:
@@ -412,7 +467,9 @@ namespace InternetProvider.Web.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
-            Error
+            Error,
+            TariffAddedSuccess,
+            TariffRemovedSuccess
         }
         private bool HasPassword()
         {

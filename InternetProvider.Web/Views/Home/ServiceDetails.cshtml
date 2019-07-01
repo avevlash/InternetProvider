@@ -1,1 +1,38 @@
-﻿
+﻿@model InternetProvider.Web.Models.ServiceDetailsViewModel
+    <div class="container">
+        <h2>@Model.ServiceName</h2>
+        <h4>@Model.Properties</h4>
+        <h5>Тарифы:</h5>
+        <div class="row">
+            @foreach(var tariff in Model.Tariffs)
+            {
+                <div class="col-sm-10 col-md-6 col-lg-4">
+                    <p class="lead">@tariff.TariffName</p>
+                    <p>@tariff.TariffProperties</p>
+                    <p>Стоимость: @($"{tariff.Price:0.00}")</p>
+                    <p>
+                        Длительность тарифа:
+                        @switch (tariff.ValidityPeriod % 10)
+                        {
+                            case 1:
+                                {
+                                    <span>@tariff.ValidityPeriod день</span>
+                                    break;
+                                }
+                            case 2-4:
+                                {
+                                    <span>@tariff.ValidityPeriod дня</span>
+                                    break;
+                                }
+                            default:
+                                {
+                                    <span>@tariff.ValidityPeriod дней</span>
+                                    break;
+                                }
+                        }
+                    </p>
+                    @Html.ActionLink("Подключить", "SubscribeToTariff", "Account", new {id = tariff.Id }, new { @class = "btn btn-success"})
+                </div>
+            }
+        </div>
+    </div>

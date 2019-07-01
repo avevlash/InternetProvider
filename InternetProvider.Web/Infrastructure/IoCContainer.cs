@@ -3,6 +3,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
+using InternetProvider.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -27,6 +28,7 @@ namespace InternetProvider.Web.Infrastructure
 
         }
     }
+          
     public class ConnectionStringConventions : ISubDependencyResolver
     {
         public bool CanResolve(

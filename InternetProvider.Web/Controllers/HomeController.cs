@@ -24,18 +24,54 @@ namespace InternetProvider.Web.Controllers
        public ActionResult ServiceList()
         {
             var services = _servService.GetAllServices().Where(x => x.IsInUse);
-            var model = new List<ServiceListViewModel>();
-            foreach (var service in services)
+            if (services != null)
             {
-                model.Add(new ServiceListViewModel()
+                var model = new List<ServiceListViewModel>();
+                foreach (var service in services)
                 {
-                    Id = service.Id.ToString(),
+                    model.Add(new ServiceListViewModel()
+                    {
+                        Id = service.Id.ToString(),
+                        ServiceName = service.ServiceName,
+                        Properties = service.Properties,
+                        MinPrice = service.TariffList.Min(x => x.Price)
+                    });
+                }
+                return View(model);
+            }
+            else return View();
+        }
+
+        public ActionResult ServiceDetails(string Id)
+        {
+            var service = _servService.GetServiceById(Id);
+            if (service != null)
+            {
+                var model = new ServiceDetailsViewModel
+                {
                     ServiceName = service.ServiceName,
                     Properties = service.Properties,
-                    MinPrice = service.TariffList.Min(x => x.Price)
-                });
+                    Tariffs = new List<TariffDetailViewModel>()
+                };
+                foreach(var tariff in service.TariffList)
+                {
+                    model.Tariffs.Add(new TariffDetailViewModel()
+                    {
+                        Id = tariff.Id.ToString(),
+                        Price = tariff.Price,
+                        TariffName = tariff.TariffName,
+                        TariffProperties = tariff.TariffProperties,
+                        ValidityPeriod = tariff.ValidityPeriod.Days
+                    });
+                }
+                return View(model);
             }
-            return View(model);
+            else return RedirectToAction("ServiceList");
+        }
+
+        public ActionResult Error()
+        {
+            return View("Error");
         }
     }
 }

@@ -13,10 +13,10 @@ namespace InternetProvider.Web.Controllers
     public class ContentController : Controller
     {
         private readonly IServService _servService;
-        public ContentController()
-        {
+        //public ContentController()
+        //{
 
-        }
+        //}
 
         public ContentController(IServService service)
         {
@@ -125,8 +125,11 @@ namespace InternetProvider.Web.Controllers
             }
             else return View(model);
         }
-
-
+        public ActionResult RemoveService(string id)
+        {
+            _servService.RemoveService(id);
+            return RedirectToAction("ServiceIndex");
+        }
 
     }
 }

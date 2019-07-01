@@ -188,6 +188,7 @@
     <Compile Include="Infrastructure\AutoMapperInstaller.cs" />
     <Compile Include="Infrastructure\BusinessLogicInstaller.cs" />
     <Compile Include="Infrastructure\ControllersInstaller.cs" />
+    <Compile Include="Infrastructure\IdentityInstaller.cs" />
     <Compile Include="Infrastructure\IoCContainer.cs" />
     <Compile Include="Infrastructure\WindsorControllerFactory.cs" />
     <Compile Include="Models\AccountViewModels.cs" />

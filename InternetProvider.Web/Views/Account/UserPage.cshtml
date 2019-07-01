@@ -9,15 +9,26 @@
     <dl class="dl-horizontal">
         <dt>Пароль:</dt>
         <dd>
-            [
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Изменить пароль", "ChangePassword")
+                @Html.ActionLink("Изменить пароль", "ChangePassword", null, new {@class= "btn btn-primary" })
             }
-            ]
         </dd>
         <dt>Остаток на счету:</dt>
-        <dd>@model.Balance </dd>
-        <dd>@Html.ActionLink("Пополнить баланс", "Payment")</dd>
+        <dd>@($"{Model.Balance:0.00}")</dd>
+        <dd>@Html.ActionLink("Пополнить баланс", "Payment", null, new {@class="btn btn-success" })</dd>
+
+        @if (Model.Tariffs != null)
+        {
+            <dt>Ближайшая сумма платежа:</dt>
+            <dd>@($"{Model.Fee:0.00}")</dd>
+            <dt>Дата снятия средств:</dt>
+            <dd>@Model.PaymentDate.ToShortDateString()</dd>
+            <dt>Подключенные тарифы:</dt>
+            foreach (var tariff in Model.Tariffs)
+            {
+                <dd>@tariff.Item2 @Html.ActionLink("Отключить", "UnsubscribeFromTariff", new { id = tariff.Item1 }, new { @class = "btn btn-danger" })</dd>
+            }
+        }
     </dl>
 </div>

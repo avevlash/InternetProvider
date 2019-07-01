@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 
@@ -26,6 +27,9 @@ namespace InternetProvider.Web.Models
     {
         public bool HasPassword { get; set; }
         public double Balance { get; set; }
+        public double Fee { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public List<Tuple<string, string>> Tariffs { get; set; }
     }
     public class ExternalLoginConfirmationViewModel
     {

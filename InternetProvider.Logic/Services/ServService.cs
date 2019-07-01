@@ -38,12 +38,6 @@ namespace InternetProvider.Logic.Services
             _store.Save();
         }
 
-        public void ChangeTariffList(string serviceId, IEnumerable<TariffDTO> tariffs)
-        {
-            var service = _store.Services.Get(serviceId);
-            service.TariffList = tariffs.ToList();
-            _store.Services.Update(service);
-            _store.Save();
-        }
+        public TariffDTO GetTariffById(string id) => _store.Tariffs.Get(id);
     }
 }
