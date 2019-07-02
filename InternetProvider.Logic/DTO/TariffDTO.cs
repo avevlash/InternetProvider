@@ -10,6 +10,7 @@ namespace InternetProvider.Logic.DTO
     {
         public Guid Id { get; set; }
         public ServiceDTO Service { get; set; }
+        public string Service_Id { get; set; }
         public double Price { get; set; }
         public string TariffName { get; set; }
         public string TariffProperties { get; set; }

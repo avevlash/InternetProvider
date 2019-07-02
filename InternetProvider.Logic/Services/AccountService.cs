@@ -79,7 +79,7 @@ namespace InternetProvider.Logic.Services
         public bool PayFees(string accountId)
         {
             var account = _store.Accounts.Get(accountId);
-            var tariffsToPay = account.Tariffs.FindAll(x=>x.EndDate<DateTime.Now);
+            var tariffsToPay = account.Tariffs.FindAll(x=>x.EndDate < DateTime.Now);
             var price = tariffsToPay.Sum(x => x.Tariff.Price);
             if (price > account.Balance) return false;
             Withdraw(accountId, price);

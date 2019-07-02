@@ -23,14 +23,14 @@ namespace InternetProvider.Data.Repositories
         }
         public IEnumerable<UserTariffDTO> GetAll()
         {
-            var tariffs = _context.UserTariffEntities.ToList();
+            var tariffs = _context.UserTariffEntities.Include("Tariff").ToList();
             var dtos = _mapper.Map<IEnumerable<UserTariffDTO>>(tariffs);
             return dtos;
         }
 
         public UserTariffDTO Get(string id)
         {
-            var tariff = _context.UserTariffEntities.Find(id);
+            var tariff = _context.UserTariffEntities.Include("Tariff").FirstOrDefault(x=>x.Id.ToString() == id);
             return _mapper.Map<UserTariffDTO>(tariff);
         }
 
@@ -41,7 +41,8 @@ namespace InternetProvider.Data.Repositories
 
         public void Update(UserTariffDTO item)
         {
-            _context.UserTariffEntities.AddOrUpdate(_mapper.Map<UserTariffEntity>(item));
+            var tariff = _mapper.Map<UserTariffEntity>(item);
+            _context.Entry(tariff).State = System.Data.Entity.EntityState.Modified;
         }
 
         public void Delete(string id)

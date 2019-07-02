@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
@@ -24,24 +25,27 @@ namespace InternetProvider.Data.Repositories
 
         public IEnumerable<AccountDTO> GetAll()
         {
-            var accounts = _context.AccountEntities.ToList();
+            var accounts = _context.AccountEntities.Include("Tariffs").Include("User").ToList();
             var dtos = _mapper.Map<IEnumerable<AccountDTO>>(accounts);
             return dtos;
         }
 
         public AccountDTO Get(string id)
         {
-            return _mapper.Map<AccountDTO>(_context.AccountEntities.Find(id));
+            return _mapper.Map<AccountDTO>(_context.AccountEntities.Include("Tariffs").Include("User").FirstOrDefault(x=>x.Id.ToString() == id));
         }
 
         public void Create(AccountDTO item)
         {
-            _context.AccountEntities.Add(_mapper.Map<AccountEntity>(item));
+            var account = _mapper.Map<AccountEntity>(item);
+            _context.Entry(account.User).State = EntityState.Detached;
+            _context.AccountEntities.Add(account);
         }
 
         public void Update(AccountDTO item)
         {
-            _context.AccountEntities.AddOrUpdate(_mapper.Map<AccountEntity>(item));
+            var account = _mapper.Map<AccountEntity>(item);
+            _context.Entry(account).State = EntityState.Modified;
         }
 
         public void Delete(string id)

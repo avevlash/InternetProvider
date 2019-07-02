@@ -19,7 +19,8 @@ namespace InternetProvider.Logic.Services
 
         public List<UserDTO> GetRegisteredUsers()
         {
-            return _store.Users.GetAll().Where(x => !string.IsNullOrEmpty(x.Id)).ToList();
+            var users = _store.Users.GetAll().Where(x => !string.IsNullOrEmpty(x.PasswordHash)).ToList();
+            return users;
         }
 
         public List<Tuple<string, string>> GetUnregistratedUsers() => 

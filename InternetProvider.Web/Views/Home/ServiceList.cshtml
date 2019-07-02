@@ -9,7 +9,7 @@
     </p>
 </div>
 <div class="row">
-    @foreach (var service in Model ?? new List<InternetProvider.Web.Models.ServiceListViewModel>() { new InternetProvider.Web.Models.ServiceListViewModel() { ServiceName = "Internet", Properties = "Lorem ipsum dolor sit amet sonsiculum", MinPrice = 30, Id = "blah" } })
+    @foreach (var service in Model)
     {
         <div class="col-lg-4 com-md-6 col-sm-10">
             <div class="text-center">
@@ -20,4 +20,9 @@
         </div>
     }
 
+    @if (Model.Count > 0)
+    {
+        Html.ActionLink("Скачать услуги pdf", "SaveServices", null, new { @class = "btn btn-primary" });
+    }
+    
 </div>

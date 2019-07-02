@@ -27,10 +27,15 @@ namespace InternetProvider.Web.Infrastructure
                 {
                     kernel.ResolveAll<Profile>().ToList().ForEach(configuration.AddProfile);
                     configuration.CreateMap<TariffEntity, TariffDTO>();
+                    configuration.CreateMap<TariffDTO, TariffEntity>();
                     configuration.CreateMap<ServiceEntity, ServiceDTO>();
+                    configuration.CreateMap<ServiceDTO, ServiceEntity>();
                     configuration.CreateMap<AccountEntity, AccountDTO>();
+                    configuration.CreateMap<AccountDTO, AccountEntity>();
                     configuration.CreateMap<UserEntity, UserDTO>();
+                    configuration.CreateMap<UserDTO, UserEntity>();
                     configuration.CreateMap<UserTariffEntity, UserTariffDTO>();
+                    configuration.CreateMap<UserTariffDTO, UserTariffEntity>();
                 });
             }).LifestyleSingleton());
 

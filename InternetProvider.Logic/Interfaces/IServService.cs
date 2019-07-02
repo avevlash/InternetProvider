@@ -1,4 +1,6 @@
 ﻿using InternetProvider.Logic.DTO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,5 +43,20 @@ namespace InternetProvider.Logic.Interfaces
         /// <param name="id">Id of tariff</param>
         /// <returns>TariffDTO</returns>
         TariffDTO GetTariffById(string id);
+        /// <summary>
+        /// Returns Pdf document with list of all services and tariffs
+        /// </summary>
+        /// <returns></returns>
+        Document GetServicesInPdf();
+        /// <summary>
+        /// Adds +1 to CurrentUsers property of service user subscribed to
+        /// </summary>
+        /// <param name="tariffId">Tariff of service</param>
+        void AddUserToService(string tariffId);
+        /// <summary>
+        /// Removes -1 from CurrentUsers property of service user unsubscribed from
+        /// </summary>
+        /// <param name="tariffId">Tariff of service</param>
+        void RemoveUserFromService(string tariffId);
     }
 }

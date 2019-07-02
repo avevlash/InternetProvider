@@ -1,4 +1,5 @@
-﻿using InternetProvider.Logic.DTO;
+﻿using Castle.Core.Logging;
+using InternetProvider.Logic.DTO;
 using InternetProvider.Logic.Interfaces;
 using InternetProvider.Web.Models;
 using System;
@@ -12,6 +13,7 @@ namespace InternetProvider.Web.Controllers
     [Authorize(Roles ="admin")]
     public class ContentController : Controller
     {
+        public ILogger Logger { get; set; }
         private readonly IServService _servService;
         //public ContentController()
         //{
@@ -62,26 +64,29 @@ namespace InternetProvider.Web.Controllers
                     });
                 }
                 _servService.AddService(service);
+                Logger.Info("New service added successfully");
                 return View();
             }
             else return View(model);
         }
 
-        //GET: Content/AddService
+        //GET: Content/EditService
         [HttpGet]
         public ActionResult EditService(string serviceId)
         {
             var service = _servService.GetServiceById(serviceId);
-            var model = new AddServiceViewModel()
+            var model = new EditServiceViewModel()
             {
+                Id = service.Id.ToString(),
                 ServiceName = service.ServiceName,
                 Properties = service.Properties,
-                TariffList = new List<TariffViewModel>()
+                TariffList = new List<EditTariffViewModel>()
             };
             foreach(var tariff in service.TariffList)
             {
-                model.TariffList.Add(new TariffViewModel()
+                model.TariffList.Add(new EditTariffViewModel()
                 {
+                    Id = tariff.Id.ToString(),
                     TariffName = tariff.TariffName,
                     TariffProperties = tariff.TariffProperties,
                     Price = tariff.Price,
@@ -91,7 +96,7 @@ namespace InternetProvider.Web.Controllers
             return View(model);
         }
 
-        //POST: Content/AddService
+        //POST: Content/EditService
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditService(EditServiceViewModel model)

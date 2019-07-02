@@ -13,6 +13,7 @@ using InternetProvider.Web.Models;
 using InternetProvider.Logic.Interfaces;
 using InternetProvider.Logic.DTO;
 using System.Collections.Generic;
+using Castle.Core.Logging;
 
 namespace InternetProvider.Web.Controllers
 {
@@ -27,7 +28,7 @@ namespace InternetProvider.Web.Controllers
         //public AccountController()
         //{
         //}
-
+        public ILogger Logger { get; set; }
         public AccountController(IAccountService accountService, IServService servService )
         {
             //UserManager = userManager;
@@ -80,11 +81,15 @@ namespace InternetProvider.Web.Controllers
                 var account = _accountService.GetUserAccount(User.Identity.GetUserId());
                 _accountService.AddTariffs(account.Id.ToString(), new TariffDTO[] { tariff });
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Error($"User {User.Identity.GetUserId()} tried to subscribe to tariff {id}. Failure: {e.Message}");
                 return RedirectToAction("UserPage", new { Message =  ManageMessageId.Error });
             }
+            _servService.AddUserToService(id);
+            Logger.Info($"User {User.Identity.GetUserId()} subscribed to tariff {id} successfuly.");
             return RedirectToAction("UserPage", new {  Message = ManageMessageId.TariffAddedSuccess});
+            
         }
 
         public ActionResult UnsubscribeFromTariff(string id)
@@ -95,10 +100,13 @@ namespace InternetProvider.Web.Controllers
                 var account = _accountService.GetUserAccount(User.Identity.GetUserId());
                 _accountService.RemoveTariffs(account.Id.ToString(), new TariffDTO[] { tariff });
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Error($"User {User.Identity.GetUserId()} tried to subscribe to tariff {id}. Failure: {e.Message}");
                 return RedirectToAction("UserPage", new { Message = ManageMessageId.Error });
             }
+            _servService.RemoveUserFromService(id);
+            Logger.Info($"User {User.Identity.GetUserId()} subscribed to tariff {id} successfuly.");
             return RedirectToAction("UserPage", new { Message = ManageMessageId.TariffRemovedSuccess });
         }
 
@@ -168,11 +176,17 @@ namespace InternetProvider.Web.Controllers
                         }
                     }
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    {
+                        Logger.Info($"User {model.Email} locked out.");
+                        return View("Lockout");
+                    }
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неудачная попытка входа.");
-                    return View(model);
+                    {
+                        Logger.Info($"User {model.Email} tried to log in unsuccessfully.");
+                        ModelState.AddModelError("", "Неудачная попытка входа.");
+                        return View(model);
+                    }
             }
         }
 
@@ -195,7 +209,7 @@ namespace InternetProvider.Web.Controllers
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
             if (result.Succeeded)
-            {
+            {              
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 if (user != null)
                 {
@@ -203,6 +217,7 @@ namespace InternetProvider.Web.Controllers
                 }
                 return RedirectToAction("UserPage", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
+            Logger.Info($"User {User.Identity.GetUserId()} tried to change password unsuccessfully.");
             AddErrors(result);
             return View(model);
         }
@@ -242,6 +257,7 @@ namespace InternetProvider.Web.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+                Logger.Warn($"Unsuccessful attempt to register from email {model.Email}");
                 AddErrors(result);
             }
 
@@ -288,6 +304,7 @@ namespace InternetProvider.Web.Controllers
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
+                    Logger.Warn($"Unsuccessful attempt of password recovery from {model.Email}");
                     return View("ForgotPasswordConfirmation");
                 }
 
@@ -351,6 +368,7 @@ namespace InternetProvider.Web.Controllers
             if (user == null)
             {
                 // Don't reveal that the user does not exist
+                Logger.Warn($"Unsuccessful attempt of resetting parrword from email {model.Email}");
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);

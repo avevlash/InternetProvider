@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace InternetProvider.Web.Controllers
 {
@@ -67,6 +69,21 @@ namespace InternetProvider.Web.Controllers
                 return View(model);
             }
             else return RedirectToAction("ServiceList");
+        }
+
+        public ActionResult SaveServices()
+        {
+            var pdfDoc = _servService.GetServicesInPdf();
+            PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+            pdfWriter.CloseStream = false;
+            pdfDoc.Close();
+            Response.Buffer = true;
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", "attachment;filename=ServiceList.pdf");
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Write(pdfDoc);
+            Response.End();
+            return View();
         }
 
         public ActionResult Error()

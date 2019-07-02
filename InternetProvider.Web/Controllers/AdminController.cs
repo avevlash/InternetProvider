@@ -1,4 +1,5 @@
-﻿using InternetProvider.Data.EntityModels;
+﻿using Castle.Core.Logging;
+using InternetProvider.Data.EntityModels;
 using InternetProvider.Data.Repositories;
 using InternetProvider.Logic.Interfaces;
 using InternetProvider.Logic.Services;
@@ -22,6 +23,8 @@ namespace InternetProvider.Web.Controllers
         private ApplicationUserManager _userManager;
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
+
+        public ILogger Logger { get; set; }
         //public AdminController()
         //{
             
@@ -104,6 +107,7 @@ namespace InternetProvider.Web.Controllers
             {
                 user.LockoutEndDateUtc = DateTime.Now.AddYears(1);
                 await UserManager.UpdateAsync(user).ConfigureAwait(false);
+                Logger.Info($"User {userId} was blocked.");
                 return RedirectToAction("Index");
             }
             else return View("Error");
@@ -116,6 +120,7 @@ namespace InternetProvider.Web.Controllers
             {
                 user.LockoutEndDateUtc = DateTime.Now.AddDays(-1);
                 await UserManager.UpdateAsync(user).ConfigureAwait(false);
+                Logger.Info($"User {userId} was unblocked.");
                 return RedirectToAction("Index");
             }
             else return View("Error");
@@ -129,11 +134,12 @@ namespace InternetProvider.Web.Controllers
             user.LockoutEnabled = true;
             var password = Membership.GeneratePassword(8, 0);
             var res = await UserManager.UpdateAsync(user);
-            var result = await UserManager.CreateAsync(user, password);
+            var result = await UserManager.AddPasswordAsync(user.Id, password);
             if (result.Succeeded)
             {
                 _accountService.RegisterAccount(user.Id);
                 await SendActivationMail(user.Id);
+                Logger.Info($"User {userId} was registered successfully.");
             }
         }
 

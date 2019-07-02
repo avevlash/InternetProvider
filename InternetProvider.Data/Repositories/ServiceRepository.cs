@@ -30,7 +30,7 @@ namespace InternetProvider.Data.Repositories
 
         public ServiceDTO Get(string id)
         {
-            return _mapper.Map<ServiceDTO>(_context.ServiceEntities.Find(id));
+            return _mapper.Map<ServiceDTO>(_context.ServiceEntities.Include("TariffList").FirstOrDefault(x=>x.Id.ToString() == id));
         }
 
         public void Create(ServiceDTO item)
@@ -40,7 +40,8 @@ namespace InternetProvider.Data.Repositories
 
         public void Update(ServiceDTO item)
         {
-            _context.ServiceEntities.AddOrUpdate(_mapper.Map<ServiceEntity>(item));
+            var service = _mapper.Map<ServiceEntity>(item);
+            _context.Entry(service).State = System.Data.Entity.EntityState.Modified;
         }
 
         public void Delete(string id)
