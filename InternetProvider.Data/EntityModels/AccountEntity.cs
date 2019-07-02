@@ -9,6 +9,7 @@ namespace InternetProvider.Data.EntityModels
 {
     public class AccountEntity:BaseEntity
     {
+      
         public virtual UserEntity User { get; set; }
         [ForeignKey("User")]
         public string User_Id { get; set; }

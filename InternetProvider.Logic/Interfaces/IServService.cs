@@ -38,6 +38,11 @@ namespace InternetProvider.Logic.Interfaces
         /// <param name="serviceId">Id of service to delete</param>
         void RemoveService(string serviceId);
         /// <summary>
+        /// Resets service to use
+        /// </summary>
+        /// <param name="serviceId">Id of service to restore</param>
+        void ResetService(string serviceId);
+        /// <summary>
         /// Gets tariff by it's id
         /// </summary>
         /// <param name="id">Id of tariff</param>

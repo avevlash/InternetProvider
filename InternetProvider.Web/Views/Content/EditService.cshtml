@@ -2,7 +2,7 @@
 <h2>Редактирование услуги</h2>
 
 <div class="row">
-    @using (Html.BeginForm("AddService", "Content", FormMethod.Post))
+    @using (Html.BeginForm("EditService", "Content", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
@@ -29,14 +29,15 @@
                     <div class="form-row" id="form_group_@i">
                         <div class="col-8">
                             <input type="hidden" name="TariffList[@i].Id" id="TariffList[@i]_Id" value="@Model.TariffList[i].Id" />
+                            <input type="hidden" name="TariffList[@i].Service_Id" id="TariffList[@i]_Service_Id" value="@Model.TariffList[i].Service_Id" />
                             <label for="TariffList[@i]_TariffName">Название тарифа</label>
-                            <input type="text" autocomplete="off" required="" name="TariffList[@i].TariffName" id="TariffList[@i]_TariffName" value="@Model.TariffList[i].TariffName" />
+                            <input type="text" autocomplete="off" required="" class="form-control" name="TariffList[@i].TariffName" id="TariffList[@i]_TariffName" value="@Model.TariffList[i].TariffName" />
                             <label for="TariffList[@i]_TariffProperties">Описание тарифа</label>
-                            <input type="text" autocomplete="off" required="" name="TariffList[@i].TariffProperties" id="TariffList[@i]_TariffProperties" value="@Model.TariffList[i].TariffProperties" />
+                            <input type="text" autocomplete="off" required="" class="form-control" name="TariffList[@i].TariffProperties" id="TariffList[@i]_TariffProperties" value="@Model.TariffList[i].TariffProperties" />
                             <label for="TariffList[@i]_Price">Стоимость тарифа</label>
-                            <input type="number" required="" step="0.1" name="TariffList[@i].Price" id="TariffList[@i]_Price" value="@Model.TariffList[i].Price" />
+                            <input type="number" required="" step="0.1" class="form-control" name="TariffList[@i].Price" id="TariffList[@i]_Price" value="@Model.TariffList[i].Price" />
                             <label for="TariffList[@i]_ValidityPeriod">Длительность тарифа(в днях)</label>
-                            <input type="number" step="1" required="" name="TariffList[@i].ValidityPeriod" id="TariffList[@i]_ValidityPeriod" value="@Model.TariffList[i].ValidityPeriod" />
+                            <input type="number" step="1" required="" class="form-control" name="TariffList[@i].ValidityPeriod" id="TariffList[@i]_ValidityPeriod" value="@Model.TariffList[i].ValidityPeriod" />
                         </div>
                         <div class="col-3">
                             <button id="@("btn"+i)" type="button" class="btn btn-danger" onclick="deleteTariff">Удалить</button>

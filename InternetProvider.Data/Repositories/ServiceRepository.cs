@@ -35,13 +35,19 @@ namespace InternetProvider.Data.Repositories
 
         public void Create(ServiceDTO item)
         {
-            _context.ServiceEntities.Add(_mapper.Map<ServiceEntity>(item));
+            var service = _mapper.Map<ServiceEntity>(item);
+            _context.ServiceEntities.Add(service);
         }
 
         public void Update(ServiceDTO item)
         {
-            var service = _mapper.Map<ServiceEntity>(item);
-            _context.Entry(service).State = System.Data.Entity.EntityState.Modified;
+            var oldService = _context.ServiceEntities.FirstOrDefault(x => x.Id == item.Id);
+            if (oldService != null)
+            {
+                var service = _mapper.Map<ServiceEntity>(item);
+                _context.Entry(oldService).CurrentValues.SetValues(service);
+            }
+            else throw new InvalidOperationException();
         }
 
         public void Delete(string id)

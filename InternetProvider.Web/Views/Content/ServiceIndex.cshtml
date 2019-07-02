@@ -6,7 +6,7 @@
         
             @Html.ActionLink("Добавить услугу", "AddService", "Content", new { }, new { @class = "btn btn-default" })
         
-        <table>
+        <table class="table table-hover">
             @foreach (var service in Model)
             {
                 <tr>
@@ -25,7 +25,9 @@
                     <td>В использовании:</td>
                     <td>@(service.IsInUse ? "Да" : "Нет")</td>
                 </tr>
-                <tr>Тарифы услуги:</tr>
+                <tr>
+                    <td>Тарифы услуги:</td>
+                </tr>
                 <tr>
                     @foreach (var tariff in service.TariffList)
                     {
@@ -38,10 +40,12 @@
                 </tr>
                 <tr>
                     <td>
-                        @Html.ActionLink("Изменить услугу", "EditService", "Content", new { id = service.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Изменить услугу", "EditService", "Content", new { serviceId = service.Id }, new { @class = "btn btn-default" })
                     </td>
                     <td>
-                        @Html.ActionLink("Убрать услугу", "RemoveService", "Content", new { id = service.Id }, new { @class = "btn btn-danger" })
+                        @(service.IsInUse?
+                            Html.ActionLink("Убрать услугу", "RemoveService", "Content", new { id = service.Id }, new { @class = "btn btn-danger" })
+                            :Html.ActionLink("Восстановить услугу", "ResetService", "Content", new { id = service.Id }, new { @class = "btn btn-success" }))
                     </td>
                 </tr>
             }

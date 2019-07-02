@@ -37,13 +37,19 @@ namespace InternetProvider.Data.Repositories
 
         public void Create(TariffDTO item)
         {
-            _context.TariffEntities.Add(_mapper.Map<TariffEntity>(item));
+            var tariff = _mapper.Map<TariffEntity>(item);
+            _context.TariffEntities.Add(tariff);
         }
 
         public void Update(TariffDTO item)
         {
-            var tariff = _mapper.Map<TariffEntity>(item);
-            _context.Entry(tariff).State = System.Data.Entity.EntityState.Modified;
+            var oldTariff = _context.TariffEntities.FirstOrDefault(x => x.Id == item.Id);
+            if (oldTariff != null)
+            {
+                TariffEntity tariff = _mapper.Map<TariffEntity>(item);
+                _context.Entry(oldTariff).CurrentValues.SetValues(tariff);
+            }
+            else throw new InvalidOperationException();
         }
 
         public void Delete(string id)

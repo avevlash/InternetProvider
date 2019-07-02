@@ -46,6 +46,11 @@ namespace InternetProvider.Data
                 // Throw a new DbEntityValidationException with the improved exception message.
                 throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
             }
+            catch(Exception e)
+            {
+                var innerEx = e.InnerException;
+                throw new Exception(e.Message+" "+innerEx?.Message??"");
+            }
         }
     }
 }

@@ -1,8 +1,12 @@
 ﻿@model InternetProvider.Web.Models.ServiceDetailsViewModel
     <div class="container">
+        <br />
         <h2>@Model.ServiceName</h2>
         <h4>@Model.Properties</h4>
-        <h5>Тарифы:</h5>
+        <br />
+        <br />
+        <h3>Тарифы:</h3>
+        <br />
         <div class="row">
             @foreach(var tariff in Model.Tariffs)
             {

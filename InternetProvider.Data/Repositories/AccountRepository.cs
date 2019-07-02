@@ -38,14 +38,18 @@ namespace InternetProvider.Data.Repositories
         public void Create(AccountDTO item)
         {
             var account = _mapper.Map<AccountEntity>(item);
-            _context.Entry(account.User).State = EntityState.Detached;
             _context.AccountEntities.Add(account);
         }
 
         public void Update(AccountDTO item)
         {
-            var account = _mapper.Map<AccountEntity>(item);
-            _context.Entry(account).State = EntityState.Modified;
+            var oldAccount = _context.AccountEntities.FirstOrDefault(x => x.Id == item.Id);
+            if (oldAccount != null)
+            {
+                var account = _mapper.Map<AccountEntity>(item);
+                _context.Entry(oldAccount).CurrentValues.SetValues(account);
+            }
+            else throw new InvalidOperationException();
         }
 
         public void Delete(string id)

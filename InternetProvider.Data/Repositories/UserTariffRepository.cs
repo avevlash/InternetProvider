@@ -36,18 +36,33 @@ namespace InternetProvider.Data.Repositories
 
         public void Create(UserTariffDTO item)
         {
-            _context.UserTariffEntities.Add(_mapper.Map<UserTariffEntity>(item));
+            var usertariff = _mapper.Map<UserTariffEntity>(item);
+            _context.UserTariffEntities.Add(usertariff);
         }
 
         public void Update(UserTariffDTO item)
         {
-            var tariff = _mapper.Map<UserTariffEntity>(item);
-            _context.Entry(tariff).State = System.Data.Entity.EntityState.Modified;
+            var oldUserTariff = _context.UserTariffEntities.FirstOrDefault(x => x.Id == item.Id);
+            if (oldUserTariff != null)
+            {
+                var userTariff = _mapper.Map<UserTariffEntity>(item);
+                _context.Entry(oldUserTariff).CurrentValues.SetValues(userTariff);
+            }
+            else throw new InvalidOperationException();
         }
 
         public void Delete(string id)
         {
-            _context.UserTariffEntities.Remove(_context.UserTariffEntities.Find(id));
+            try
+            {
+                var Id = Guid.Parse(id);
+                var tar = _context.UserTariffEntities.First(x=>x.Id==Id);
+                _context.UserTariffEntities.Remove(tar);
+            }
+            catch(Exception e)
+            {
+                var exc = e;
+            }
         }
     }
 }

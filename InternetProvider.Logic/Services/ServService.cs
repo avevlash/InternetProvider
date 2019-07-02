@@ -31,6 +31,15 @@ namespace InternetProvider.Logic.Services
         public void UpdateService(ServiceDTO service)
         {
             _store.Services.Update(service);
+            foreach(var tar in service.TariffList)
+            {
+                if (tar.Id == Guid.Empty || tar.Id == null)
+                {
+                    tar.Service_Id = service.Id.ToString();
+                    _store.Tariffs.Create(tar);
+                }
+                else _store.Tariffs.Update(tar);
+            }
             _store.Save();
         }
 
@@ -38,6 +47,13 @@ namespace InternetProvider.Logic.Services
         {
             var service = _store.Services.Get(serviceId);
             service.IsInUse = false;
+            _store.Services.Update(service);
+            _store.Save();
+        }
+        public void ResetService(string serviceId)
+        {
+            var service = _store.Services.Get(serviceId);
+            service.IsInUse = true;
             _store.Services.Update(service);
             _store.Save();
         }
@@ -96,6 +112,7 @@ namespace InternetProvider.Logic.Services
             var service = tariff.Service;
             service.CurrentUsers += 1;
             _store.Services.Update(service);
+            _store.Save();
         }
 
         public void RemoveUserFromService(string tariffId)
@@ -104,6 +121,7 @@ namespace InternetProvider.Logic.Services
             var service = tariff.Service;
             service.CurrentUsers -= 1;
             _store.Services.Update(service);
+            _store.Save();
         }
     }
 }

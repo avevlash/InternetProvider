@@ -12,6 +12,9 @@ namespace InternetProvider.Data.EntityModels
         public virtual TariffEntity Tariff { get; set; }
         [ForeignKey("Tariff")]
         public Guid Tariff_Id { get; set; }
+        public virtual AccountEntity Account { get; set; }
+        [ForeignKey("Account")]
+        public Guid Account_Id { get; set; }
         public DateTime BeginDate { get; set; }
         public DateTime EndDate { get; set; }
     }

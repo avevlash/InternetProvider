@@ -45,6 +45,11 @@ namespace InternetProvider.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.TariffList == null || model.TariffList.Count < 1)
+                {
+                    ModelState.AddModelError("TariffList", "Добавьте хотя бы один тариф");
+                    return View(model);
+                }
                 ServiceDTO service = new ServiceDTO()
                 {
                     ServiceName = model.ServiceName,
@@ -74,6 +79,7 @@ namespace InternetProvider.Web.Controllers
         [HttpGet]
         public ActionResult EditService(string serviceId)
         {
+
             var service = _servService.GetServiceById(serviceId);
             var model = new EditServiceViewModel()
             {
@@ -87,6 +93,7 @@ namespace InternetProvider.Web.Controllers
                 model.TariffList.Add(new EditTariffViewModel()
                 {
                     Id = tariff.Id.ToString(),
+                    Service_Id = tariff.Service_Id.ToString(),
                     TariffName = tariff.TariffName,
                     TariffProperties = tariff.TariffProperties,
                     Price = tariff.Price,
@@ -103,6 +110,11 @@ namespace InternetProvider.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.TariffList == null || model.TariffList.Count < 1)
+                {
+                    ModelState.AddModelError("TariffList", "Добавьте хотя бы один тариф");
+                    return View(model);
+                }
                 ServiceDTO service = new ServiceDTO()
                 {
                     Id = Guid.Parse(model.Id),
@@ -118,7 +130,8 @@ namespace InternetProvider.Web.Controllers
                     var res = Guid.TryParse(tariff.Id, out id);
                     service.TariffList.Add(new TariffDTO()
                     {
-                        Id = res?id:Guid.Empty,
+                        Id = id,
+                        Service_Id = tariff.Service_Id,
                         Price = tariff.Price,
                         TariffName = tariff.TariffName,
                         TariffProperties = tariff.TariffProperties,
@@ -133,6 +146,12 @@ namespace InternetProvider.Web.Controllers
         public ActionResult RemoveService(string id)
         {
             _servService.RemoveService(id);
+            return RedirectToAction("ServiceIndex");
+        }
+
+        public ActionResult ResetService(string id)
+        {
+            _servService.ResetService(id);
             return RedirectToAction("ServiceIndex");
         }
 

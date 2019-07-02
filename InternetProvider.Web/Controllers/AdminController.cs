@@ -126,7 +126,7 @@ namespace InternetProvider.Web.Controllers
             else return View("Error");
         }
 
-        public async Task CreateUser(string userId)
+        public async Task<ActionResult> CreateUser(string userId)
         {
             var rand = new Random();
             var user = await UserManager.FindByIdAsync(userId);
@@ -140,7 +140,9 @@ namespace InternetProvider.Web.Controllers
                 _accountService.RegisterAccount(user.Id);
                 await SendActivationMail(user.Id);
                 Logger.Info($"User {userId} was registered successfully.");
+                return View("UserIndex");
             }
+            return View("Error");
         }
 
         #region Helpers

@@ -102,11 +102,11 @@ namespace InternetProvider.Web.Controllers
             }
             catch (Exception e)
             {
-                Logger.Error($"User {User.Identity.GetUserId()} tried to subscribe to tariff {id}. Failure: {e.Message}");
+                Logger.Error($"User {User.Identity.GetUserId()} tried to unsubscribe from tariff {id}. Failure: {e.Message}");
                 return RedirectToAction("UserPage", new { Message = ManageMessageId.Error });
             }
             _servService.RemoveUserFromService(id);
-            Logger.Info($"User {User.Identity.GetUserId()} subscribed to tariff {id} successfuly.");
+            Logger.Info($"User {User.Identity.GetUserId()} unsubscribed from tariff {id} successfuly.");
             return RedirectToAction("UserPage", new { Message = ManageMessageId.TariffRemovedSuccess });
         }
 
@@ -127,8 +127,8 @@ namespace InternetProvider.Web.Controllers
             {
                 HasPassword = HasPassword(),
                 Balance = account.Balance,
-                Fee = account.Tariffs.Sum(x => x.Tariff.Price),
-                PaymentDate = account.Tariffs.Min(x => x.EndDate),
+                Fee = account.Tariffs.Count>0?account.Tariffs.Sum(x => x.Tariff.Price):0,
+                PaymentDate = account.Tariffs.Count > 0 ? account.Tariffs.Min(x => x.EndDate):DateTime.Now,
                 Tariffs = new List<Tuple<string, string>>()
             };
             foreach(var item in account.Tariffs)

@@ -16,7 +16,6 @@ namespace InternetProvider.Web.Models
         [Required(ErrorMessage = "Введите описание услуги")]
         public string Properties { get; set; }
         [Display(Name = "Тарифы")]
-        [ListValidation(1, ErrorMessage = "Введите хотя бы один тариф")]
         public List<TariffViewModel> TariffList { get; set; }
     }
     public class EditServiceViewModel
@@ -29,13 +28,13 @@ namespace InternetProvider.Web.Models
         [Required(ErrorMessage = "Введите описание услуги")]
         public string Properties { get; set; }
         [Display(Name = "Тарифы")]
-        [ListValidation(1, ErrorMessage = "Введите хотя бы один тариф")]
         public List<EditTariffViewModel> TariffList { get; set; }
     }
 
     public class EditTariffViewModel
     {
         public string Id { get; set; }
+        public string Service_Id { get; set; }
         public double Price { get; set; }
         public string TariffName { get; set; }
         public string TariffProperties { get; set; }

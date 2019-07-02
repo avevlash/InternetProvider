@@ -18,7 +18,7 @@ namespace InternetProvider.Logic.Services
         }
         public AccountDTO GetUserAccount(string userId)
         {
-            return _store.Accounts.GetAll().FirstOrDefault(x => x.User.Id == userId);
+            return _store.Accounts.GetAll().FirstOrDefault(x => x.User_Id == userId);
         }
 
         public void AddToBalance(string id, double value)
@@ -50,9 +50,10 @@ namespace InternetProvider.Logic.Services
             }
             foreach(var tariff in tariffs)
             {
-                account.Tariffs.Add(new UserTariffDTO()
+                _store.UserTariffs.Create(new UserTariffDTO()
                 {
-                    Tariff = tariff,
+                    Account_Id = account.Id,
+                    Tariff_Id = tariff.Id.ToString(),
                     BeginDate = DateTime.Now,
                     EndDate = DateTime.Now + tariff.ValidityPeriod
                 });
@@ -63,16 +64,17 @@ namespace InternetProvider.Logic.Services
         public void RemoveTariffs(string accountId, IEnumerable<TariffDTO> tariffs)
         {
             var account = _store.Accounts.Get(accountId);
-            foreach (var item in account.Tariffs)
-            {
-                if (tariffs.Contains(item.Tariff)) throw new ValidationException("User can't be unsubscribed from tariff he didn't subscribe to", "Tariffs");
-            }
+            //foreach (var item in account.Tariffs)
+            //{
+            //    if (!tariffs.Contains(item.Tariff)) throw new ValidationException("User can't be unsubscribed from tariff he didn't subscribe to", "Tariffs");
+            //}
             foreach(var tariff in tariffs)
             {
-                var usertariff = account.Tariffs.Find(x => x.Tariff.Id == tariff.Id);
-                account.Tariffs.Remove(usertariff);
+                var usertariff = _store.UserTariffs.GetAll().FirstOrDefault(x => x.Tariff_Id == tariff.Id.ToString() && x.Account_Id == account.Id);
+                if (usertariff != null)
+                    _store.UserTariffs.Delete(usertariff.Id.ToString());
+                else throw new ValidationException($"Attempt to delete unexisting user tariff {tariff.TariffName}", "UserTariffs");
             }
-            _store.Accounts.Update(account);
             _store.Save();
         }
 
@@ -90,7 +92,7 @@ namespace InternetProvider.Logic.Services
         {
             var account = new AccountDTO()
             {
-                User = _store.Users.Get(userId),
+                User_Id = userId,
                 Balance = balance,
                 Tariffs = new List<UserTariffDTO>()
             };

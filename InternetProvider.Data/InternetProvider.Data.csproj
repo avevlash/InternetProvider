@@ -73,6 +73,14 @@
     <Compile Include="Migrations\201907021047091_Second.Designer.cs">
       <DependentUpon>201907021047091_Second.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907021214521_Third.cs" />
+    <Compile Include="Migrations\201907021214521_Third.Designer.cs">
+      <DependentUpon>201907021214521_Third.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201907021332104_NumberFour.cs" />
+    <Compile Include="Migrations\201907021332104_NumberFour.Designer.cs">
+      <DependentUpon>201907021332104_NumberFour.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
@@ -98,6 +106,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907021047091_Second.resx">
       <DependentUpon>201907021047091_Second.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907021214521_Third.resx">
+      <DependentUpon>201907021214521_Third.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907021332104_NumberFour.resx">
+      <DependentUpon>201907021332104_NumberFour.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

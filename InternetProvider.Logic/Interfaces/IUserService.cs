@@ -23,7 +23,7 @@ namespace InternetProvider.Logic.Interfaces
         /// <summary>
         /// Gets users that didn't get registered yet
         /// </summary>
-        /// <returns>List<UserDTO></returns>
+        /// <returns>Item1 in Tuple id Id, Item2 is Email</returns>
         List<Tuple<string, string>> GetUnregistratedUsers();
     }
 }
