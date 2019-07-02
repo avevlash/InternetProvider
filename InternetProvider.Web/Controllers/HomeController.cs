@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.IO;
 
 namespace InternetProvider.Web.Controllers
 {
@@ -71,19 +72,27 @@ namespace InternetProvider.Web.Controllers
             else return RedirectToAction("ServiceList");
         }
 
+        [HttpPost]
         public ActionResult SaveServices()
         {
-            var pdfDoc = _servService.GetServicesInPdf();
-            PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+            MemoryStream workStream = new MemoryStream();
+            var pdfDoc = new Document();
+            var pathToFont = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "verdana.ttf");
+            PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, workStream);
             pdfWriter.CloseStream = false;
+            pdfDoc.Open();
+            BaseFont bfR = BaseFont.CreateFont(pathToFont, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseColor clrBlack = new BaseColor(0, 0, 0);
+            Font font = new Font(bfR, 14, Font.NORMAL, clrBlack);
+            pdfDoc.Add(_servService.GetServicesInPdf(font));
             pdfDoc.Close();
-            Response.Buffer = true;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "attachment;filename=ServiceList.pdf");
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Write(pdfDoc);
-            Response.End();
-            return View();
+
+            byte[] byteInfo = workStream.ToArray();
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+
+            return File(workStream, "application/pdf", "ServiceList.pdf");
         }
 
         public ActionResult Error()

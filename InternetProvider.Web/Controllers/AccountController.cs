@@ -119,6 +119,7 @@ namespace InternetProvider.Web.Controllers
                 : message == ManageMessageId.Error ? "Произошла ошибка."
                 : message == ManageMessageId.TariffAddedSuccess ? "Тариф успешно добавлен"
                  : message == ManageMessageId.TariffRemovedSuccess ? "Тариф успешно удален"
+                 : message == ManageMessageId.PaymentSuccess ? "Оплата успешно произведена"
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -263,11 +264,6 @@ namespace InternetProvider.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        public ActionResult Payment()
-        {
-            return View();
         }
 
         //
@@ -487,7 +483,9 @@ namespace InternetProvider.Web.Controllers
             RemovePhoneSuccess,
             Error,
             TariffAddedSuccess,
-            TariffRemovedSuccess
+            TariffRemovedSuccess,
+            PaymentSuccess
+
         }
         private bool HasPassword()
         {

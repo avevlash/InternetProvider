@@ -1,42 +1,90 @@
 ﻿@model InternetProvider.Web.Models.ServiceDetailsViewModel
-    <div class="container">
-        <br />
-        <h2>@Model.ServiceName</h2>
-        <h4>@Model.Properties</h4>
-        <br />
-        <br />
-        <h3>Тарифы:</h3>
-        <br />
-        <div class="row">
-            @foreach(var tariff in Model.Tariffs)
-            {
-                <div class="col-sm-10 col-md-6 col-lg-4">
-                    <p class="lead">@tariff.TariffName</p>
-                    <p>@tariff.TariffProperties</p>
-                    <p>Стоимость: @($"{tariff.Price:0.00}")</p>
-                    <p>
-                        Длительность тарифа:
-                        @switch (tariff.ValidityPeriod % 10)
-                        {
-                            case 1:
-                                {
-                                    <span>@tariff.ValidityPeriod день</span>
-                                    break;
-                                }
-                            case 2-4:
-                                {
-                                    <span>@tariff.ValidityPeriod дня</span>
-                                    break;
-                                }
-                            default:
-                                {
-                                    <span>@tariff.ValidityPeriod дней</span>
-                                    break;
-                                }
-                        }
-                    </p>
-                    @Html.ActionLink("Подключить", "SubscribeToTariff", "Account", new {id = tariff.Id }, new { @class = "btn btn-success"})
-                </div>
-            }
-        </div>
+<script type="text/javascript">
+    function Sort(val) {
+        var setOfDiv = document.getElementsByClassName("col-sm-10");
+        var divs = [];
+        for (let div of setOfDiv) {
+            divs.push(div);
+        }
+        if (val === "az") {
+            divs.sort(function (a, b) {
+                var textA =  a.querySelector(".lead").textContent;
+                var textB =  b.querySelector(".lead").textContent;
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
+        } else if (val === "za") {
+            divs.sort(function (a, b) {
+                var textA = a.querySelector(".lead").textContent;
+                var textB = b.querySelector(".lead").textContent;
+                return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
+            });
+        } else {
+            divs.sort(function (a, b) {
+                var textA = a.querySelector(".price").textContent;
+                var textB = b.querySelector(".price").textContent;
+                console.log(numA + " " + numB);
+                return (numA < numB) ? -1 : (numA > numB) ? 1 : 0;
+            });
+        }
+        var container = document.getElementsByClassName("row")[0];
+        while (container.firstChild) container.removeChild(container.firstChild);
+        for (let div of divs) {
+            container.appendChild(div);
+        }
+    }
+</script>
+<div class="container">
+    <br />
+    <h2>@Model.ServiceName</h2>
+    <h4>@Model.Properties</h4>
+
+    <h3>Тарифы:</h3>
+    <br />
+    <label for="selectSort">Сортировать по:</label>
+    <select class="form-control" id="selectSort" onchange="Sort(this.value)">
+        <option value="az">Алфавиту(а-з)</option>
+        <option value="za">Алфавиту(з-а)</option>
+        <option value="price">Цене</option>
+    </select>
+    <br />
+    <br />
+    <div class="row">
+        @foreach (var tariff in Model.Tariffs)
+        {
+            <div class="col-sm-10 col-md-6 col-lg-4">
+                <p class="lead">@tariff.TariffName</p>
+                <p>@tariff.TariffProperties</p>
+                <p class="price">Стоимость: @($"{tariff.Price:0.00}")</p>
+                <p>
+                    Длительность тарифа:
+                    @switch (tariff.ValidityPeriod % 10)
+                    {
+                        case 1:
+                            {
+                                <span>@tariff.ValidityPeriod день</span>
+                                break;
+                            }
+                        case 2 - 4:
+                            {
+                                <span>@tariff.ValidityPeriod дня</span>
+                                break;
+                            }
+                        default:
+                            {
+                                <span>@tariff.ValidityPeriod дней</span>
+                                break;
+                            }
+                    }
+                </p>
+                @Html.ActionLink("Подключить", "SubscribeToTariff", "Account", new { id = tariff.Id }, new { @class = "btn btn-success" })
+            </div>
+        }
     </div>
+    <br />
+    <br />
+    @using (Html.BeginForm("SaveServices", "Home", FormMethod.Post))
+    {
+        <button type="submit" class="btn btn-primary">Сохранить тарифы в PDF</button>
+    }
+</div>
+

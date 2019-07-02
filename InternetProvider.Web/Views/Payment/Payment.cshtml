@@ -1,0 +1,14 @@
+﻿@model InternetProvider.Web.Models.LiqPayCheckoutFormModel
+@{
+    ViewBag.Title = "Оплата";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Оплата услуг</h2>
+
+<form method="POST" accept-charset="utf-8" action="https://www.liqpay.ua/api/3/checkout">
+    <input type="hidden" name="data" value="@Model.Data" />
+    <input type="hidden" name="signature" value="@Model.Signature" />
+    <input type="number" placeholder="Сумма оплаты" required="required" class="form-control" />
+    <button class="btn btn-success">Оплатить</button>
+</form>s

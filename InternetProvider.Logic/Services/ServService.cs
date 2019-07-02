@@ -60,42 +60,41 @@ namespace InternetProvider.Logic.Services
 
         public TariffDTO GetTariffById(string id) => _store.Tariffs.Get(id);
 
-        public Document GetServicesInPdf()
+        public PdfPTable GetServicesInPdf(Font font)
         {
-            Document pdfDoc = new Document(PageSize.A4, 25, 25, 25, 15);
-            pdfDoc.Open();
-            Chunk header = new Chunk("Список услуг и тарифов по ним на " + DateTime.Now.ToShortDateString(), FontFactory.GetFont("Arial", 18, Font.BOLD, BaseColor.BLACK));
-            Paragraph para = new Paragraph(header);
-            pdfDoc.Add(para);
             PdfPTable table = new PdfPTable(4);
             table.WidthPercentage = 100;
             table.HorizontalAlignment = 1;
             table.SpacingBefore = 20f;
             table.SpacingAfter = 30f;
+            PdfPCell headCell = new PdfPCell();
+            headCell.Colspan = 4;
+            headCell.AddElement(new Chunk("Список услуг и тарифов по ним на " + DateTime.Now.ToShortDateString(), font));
+            table.AddCell(headCell);
             var serviceList = _store.Services.GetAll().Where(x => x.IsInUse).ToArray();
             foreach (var service in serviceList)
             {
                 PdfPCell nameCell = new PdfPCell();
                 nameCell.Colspan = 4;
-                nameCell.AddElement(new Chunk(service.ServiceName));
+                nameCell.AddElement(new Chunk(service.ServiceName, font));
                 table.AddCell(nameCell);
                 PdfPCell propCell = new PdfPCell();
                 propCell.Colspan = 4;
-                propCell.AddElement(new Chunk(service.Properties));
+                propCell.AddElement(new Chunk(service.Properties, font));
                 table.AddCell(propCell);
-                table.AddCell("Название тарифа");
-                table.AddCell("Описание тарифа");
-                table.AddCell("Стоимость");
-                table.AddCell("Длительность");
+                table.AddCell(new PdfPCell(new Phrase("Название тарифа", font)));
+                table.AddCell(new PdfPCell(new Phrase("Описание тарифа", font)));
+                table.AddCell(new PdfPCell(new Phrase("Стоимость", font)));
+                table.AddCell(new PdfPCell(new Phrase("Длительность", font)));
                 foreach (var item in service.TariffList)
                 {
-                    table.AddCell(item.TariffName);
-                    table.AddCell(item.TariffProperties);
-                    table.AddCell($"{item.Price:0.00}");
-                    table.AddCell(item.ValidityPeriod.Days +
+                    table.AddCell(new PdfPCell(new Phrase(item.TariffName, font)));
+                    table.AddCell(new PdfPCell(new Phrase(item.TariffProperties, font)));
+                    table.AddCell(new PdfPCell(new Phrase($"{item.Price:0.00}", font)));
+                    table.AddCell(new PdfPCell(new Phrase(item.ValidityPeriod.Days +
                          item.ValidityPeriod.Days % 10 == 1 ? " день"
                         : item.ValidityPeriod.Days % 10 > 1 && item.ValidityPeriod.Days % 10 < 5 ? " дня"
-                        : " дней");
+                        : " дней", font)));
                 }
                 PdfPCell emptyCell = new PdfPCell();
                 emptyCell.Colspan = 4;
@@ -103,7 +102,7 @@ namespace InternetProvider.Logic.Services
                 emptyCell.AddElement(new Chunk(" "));
                 table.AddCell(emptyCell);
             }
-            return pdfDoc;
+            return table;
         }
 
         public void AddUserToService(string tariffId)

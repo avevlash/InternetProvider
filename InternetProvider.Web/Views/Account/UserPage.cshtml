@@ -16,7 +16,7 @@
         </dd>
         <dt>Остаток на счету:</dt>
         <dd>@($"{Model.Balance:0.00}")</dd>
-        <dd>@Html.ActionLink("Пополнить баланс", "Payment", null, new {@class="btn btn-success" })</dd>
+        <dd>@Html.ActionLink("Пополнить баланс", "Payment", "Payment", new { amount = (int)Model.Fee }, new {@class="btn btn-success" })</dd>
 
         @if (Model.Tariffs != null)
         {

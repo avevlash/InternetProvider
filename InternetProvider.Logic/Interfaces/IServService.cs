@@ -52,7 +52,7 @@ namespace InternetProvider.Logic.Interfaces
         /// Returns Pdf document with list of all services and tariffs
         /// </summary>
         /// <returns></returns>
-        Document GetServicesInPdf();
+        PdfPTable GetServicesInPdf(Font font);
         /// <summary>
         /// Adds +1 to CurrentUsers property of service user subscribed to
         /// </summary>

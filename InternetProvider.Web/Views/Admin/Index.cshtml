@@ -24,7 +24,7 @@
                 <td>@item.AccountNumber</td>
                 <td>@item.Tariffs</td>
                 <td>@(item.IsBlocked?"Да":"Нет")</td>
-                <td>  @(item.IsBlocked?Html.ActionLink("Разблокировать", "BlockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-default" }):Html.ActionLink("Заблокировать", "BlockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-danger" }))</td>
+                <td>  @(item.IsBlocked?Html.ActionLink("Разблокировать", "UnblockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-default" }):Html.ActionLink("Заблокировать", "BlockUser", "Admin", new { userId = item.Id }, new { @class = "btn btn-danger" }))</td>
             </tr>
             }
         </tbody>

@@ -28,3 +28,12 @@
 2019-07-02 19:03:42,655 [12] INFO  InternetProvider.Web.Controllers.AccountController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec unsubscribed from tariff 9bf4b506-c69c-e911-9e87-5c5f67bfe72f successfuly.
 2019-07-02 19:39:40,659 [12] INFO  InternetProvider.Web.Controllers.ContentController [(null)] - New service added successfully
 2019-07-02 19:45:26,540 [11] INFO  InternetProvider.Web.Controllers.AccountController [(null)] - User c9d8d856-b23c-4e2f-bb16-adfc00e6aa8a tried to change password unsuccessfully.
+2019-07-02 22:06:23,362 [15] INFO  InternetProvider.Web.Controllers.AdminController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec was blocked.
+2019-07-02 22:06:38,364 [14] INFO  InternetProvider.Web.Controllers.AccountController [(null)] - User avevlash@gmail.com locked out.
+2019-07-02 22:08:53,749 [11] INFO  InternetProvider.Web.Controllers.AdminController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec was blocked.
+2019-07-02 22:09:15,304 [9] INFO  InternetProvider.Web.Controllers.AccountController [(null)] - User avevlash@gmail.com locked out.
+2019-07-02 22:09:56,970 [10] INFO  InternetProvider.Web.Controllers.AccountController [(null)] - User avevlash@gmail.com locked out.
+2019-07-02 22:10:28,195 [16] INFO  InternetProvider.Web.Controllers.AdminController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec was blocked.
+2019-07-02 22:10:38,318 [12] INFO  InternetProvider.Web.Controllers.AdminController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec was blocked.
+2019-07-02 22:11:09,881 [13] INFO  InternetProvider.Web.Controllers.AdminController [(null)] - User e843ed07-1614-4171-821f-575ddf873aec was unblocked.
+2019-07-02 22:15:18,368 [11] INFO  InternetProvider.Web.Controllers.ContentController [(null)] - New service added successfully

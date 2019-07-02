@@ -194,6 +194,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -202,12 +203,14 @@
     <Compile Include="Infrastructure\ControllersInstaller.cs" />
     <Compile Include="Infrastructure\IdentityInstaller.cs" />
     <Compile Include="Infrastructure\IoCContainer.cs" />
+    <Compile Include="Infrastructure\LiqPayHelper.cs" />
     <Compile Include="Infrastructure\LoggerInstaller.cs" />
     <Compile Include="Infrastructure\WindsorControllerFactory.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModels.cs" />
     <Compile Include="Models\ContentViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
+    <Compile Include="Models\PaymentViewModels.cs" />
     <Compile Include="Models\ServiceViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -259,7 +262,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Admin\UserIndex.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Account\Payment.cshtml" />
+    <Content Include="Views\Payment\Payment.cshtml" />
     <Content Include="Views\Home\ServiceList.cshtml" />
     <Content Include="Views\Home\ServiceDetails.cshtml" />
     <Content Include="Views\Content\ServiceIndex.cshtml" />
