@@ -54,6 +54,16 @@ namespace InternetProvider.Data.Repositories
 
         public void Delete(string id)
         {
+            try
+            {
+                var Id = Guid.Parse(id);
+                var tar = _context.AccountEntities.First(x => x.Id == Id);
+                _context.AccountEntities.Remove(tar);
+            }
+            catch (Exception e)
+            {
+                var exc = e;
+            }
             _context.AccountEntities.Remove(_context.AccountEntities.Find(id));
         }
     }

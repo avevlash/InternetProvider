@@ -61,7 +61,10 @@ namespace InternetProvider.Web.Controllers
                 _userManager = value;
             }
         }
-        
+        /// <summary>
+        /// Gets list of all registered users
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             var users = _userService.GetRegisteredUsers();
@@ -83,7 +86,10 @@ namespace InternetProvider.Web.Controllers
             }
             else return View();
         }
-
+        /// <summary>
+        /// Gets all unregistered users
+        /// </summary>
+        /// <returns></returns>
         public ActionResult UserIndex()
         {
             var users = _userService.GetUnregistratedUsers();
@@ -126,11 +132,23 @@ namespace InternetProvider.Web.Controllers
             else return View("Error");
         }
 
+        /// <summary>
+        /// Fills user's account and sends him activation mail
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
         public async Task<ActionResult> CreateUser(string userId)
         {
             var rand = new Random();
             var user = await UserManager.FindByIdAsync(userId);
-            user.AccountNumber = (rand.Next() % 10000000).ToString("000-00-00");
+            var accNumber = (rand.Next() % 10000000).ToString("000-00-00");
+            var users = _userService.GetAllUsers();
+            while(users.Any(x=>x.AccountNumber == accNumber))
+            {
+                accNumber = (rand.Next() % 10000000).ToString("000-00-00");
+            }
+            user.AccountNumber = accNumber;
             user.LockoutEnabled = true;
             var password = Membership.GeneratePassword(8, 0);
             var res = await UserManager.UpdateAsync(user);
@@ -140,7 +158,7 @@ namespace InternetProvider.Web.Controllers
                 _accountService.RegisterAccount(user.Id);
                 await SendActivationMail(user.Id);
                 Logger.Info($"User {userId} was registered successfully.");
-                return View("UserIndex");
+                return RedirectToAction("UserIndex");
             }
             return View("Error");
         }

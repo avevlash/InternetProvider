@@ -62,10 +62,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InternetProvider.Data\InternetProvider.Data.csproj">
+      <Project>{2C78D819-AE08-4464-AFF3-907863DB436A}</Project>
+      <Name>InternetProvider.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InternetProvider.Logic\InternetProvider.Logic.csproj">
+      <Project>{224F372F-4F6D-444C-A837-CB768CD443E8}</Project>
+      <Name>InternetProvider.Logic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

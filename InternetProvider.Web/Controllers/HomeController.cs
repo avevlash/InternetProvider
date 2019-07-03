@@ -99,5 +99,10 @@ namespace InternetProvider.Web.Controllers
         {
             return View("Error");
         }
+
+        public ActionResult NotFound()
+        {
+            return View("NotFound");
+        }
     }
 }

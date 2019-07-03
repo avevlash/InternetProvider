@@ -30,7 +30,14 @@ namespace InternetProvider.Logic.Services
 
         public void UpdateService(ServiceDTO service)
         {
-            _store.Services.Update(service);
+                var oldService = _store.Services.Get(service.Id.ToString());
+                foreach (var oldtar in oldService.TariffList)
+                {
+                    if (!service.TariffList.Any(x => x.Id == oldtar.Id))
+                    {
+                        _store.Tariffs.Delete(oldtar.Id.ToString());
+                    }
+                }
             foreach(var tar in service.TariffList)
             {
                 if (tar.Id == Guid.Empty || tar.Id == null)
@@ -40,6 +47,7 @@ namespace InternetProvider.Logic.Services
                 }
                 else _store.Tariffs.Update(tar);
             }
+            _store.Services.Update(service);
             _store.Save();
         }
 
@@ -91,10 +99,11 @@ namespace InternetProvider.Logic.Services
                     table.AddCell(new PdfPCell(new Phrase(item.TariffName, font)));
                     table.AddCell(new PdfPCell(new Phrase(item.TariffProperties, font)));
                     table.AddCell(new PdfPCell(new Phrase($"{item.Price:0.00}", font)));
-                    table.AddCell(new PdfPCell(new Phrase(item.ValidityPeriod.Days +
+                    var text = 
                          item.ValidityPeriod.Days % 10 == 1 ? " день"
                         : item.ValidityPeriod.Days % 10 > 1 && item.ValidityPeriod.Days % 10 < 5 ? " дня"
-                        : " дней", font)));
+                        : " дней";
+                    table.AddCell(new PdfPCell(new Phrase(item.ValidityPeriod.Days + text, font)));
                 }
                 PdfPCell emptyCell = new PdfPCell();
                 emptyCell.Colspan = 4;

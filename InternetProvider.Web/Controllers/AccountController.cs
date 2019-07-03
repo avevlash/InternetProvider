@@ -72,7 +72,11 @@ namespace InternetProvider.Web.Controllers
                 _roleManager = value;
             }
         }
-
+        /// <summary>
+        /// Subscribes user's account to new tariff
+        /// </summary>
+        /// <param name="id">tariff id</param>
+        /// <returns></returns>
         public ActionResult SubscribeToTariff(string id)
         {
             try
@@ -91,7 +95,11 @@ namespace InternetProvider.Web.Controllers
             return RedirectToAction("UserPage", new {  Message = ManageMessageId.TariffAddedSuccess});
             
         }
-
+        /// <summary>
+        /// Unsubscribes user's account from tariff
+        /// </summary>
+        /// <param name="id">Tariff id</param>
+        /// <returns></returns>
         public ActionResult UnsubscribeFromTariff(string id)
         {
             try
@@ -206,6 +214,11 @@ namespace InternetProvider.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                return View(model);
+            }
+            if(model.OldPassword == model.NewPassword)
+            {
+                ModelState.AddModelError("", "Новый пароль совпадает со старым.");
                 return View(model);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
@@ -339,23 +352,7 @@ namespace InternetProvider.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(model);
-            //}
-            //var user = await UserManager.FindByNameAsync(model.Email);
-            //if (user == null)
-            //{
-            //    // Don't reveal that the user does not exist
-            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
-            //}
-            //var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-            //if (result.Succeeded)
-            //{
-            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
-            //}
-            //AddErrors(result);
-            //return View();
+           
             if (!ModelState.IsValid)
             {
                 return View(model);

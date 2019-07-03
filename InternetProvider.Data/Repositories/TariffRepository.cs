@@ -54,7 +54,16 @@ namespace InternetProvider.Data.Repositories
 
         public void Delete(string id)
         {
-            _context.TariffEntities.Remove(_context.TariffEntities.Find(id));
+            try
+            {
+                var Id = Guid.Parse(id);
+                var tar = _context.TariffEntities.First(x => x.Id == Id);
+                _context.TariffEntities.Remove(tar);
+            }
+            catch (Exception e)
+            {
+                var exc = e;
+            }
         }
     }
 }

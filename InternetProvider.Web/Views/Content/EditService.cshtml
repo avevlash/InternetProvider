@@ -40,7 +40,7 @@
                             <input type="number" step="1" required="" class="form-control" name="TariffList[@i].ValidityPeriod" id="TariffList[@i]_ValidityPeriod" value="@Model.TariffList[i].ValidityPeriod" />
                         </div>
                         <div class="col-3">
-                            <button id="@("btn"+i)" type="button" class="btn btn-danger" onclick="deleteTariff">Удалить</button>
+                            <button id="@("btn"+i)" type="button" class="btn btn-danger">Удалить</button>
                         </div>
                     </div>
                 }
@@ -52,6 +52,11 @@
 </div>
 <script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
+    (function () {
+        $(".col-md-10").on("click",".btn.btn-danger", deleteTariff);
+
+    }());
+
     function deleteTariff() {
         var items = $('.form-row');
         for (i = 0; i < items.length; i++) {

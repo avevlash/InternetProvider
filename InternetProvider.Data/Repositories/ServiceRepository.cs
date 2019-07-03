@@ -52,7 +52,17 @@ namespace InternetProvider.Data.Repositories
 
         public void Delete(string id)
         {
-            _context.ServiceEntities.Remove(_context.ServiceEntities.Find(id));
+            try
+            {
+                var Id = Guid.Parse(id);
+                var tar = _context.ServiceEntities.First(x => x.Id == Id);
+                _context.ServiceEntities.Remove(tar);
+            }
+            catch (Exception e)
+            {
+                var exc = e;
+                throw;
+            }
         }
     }
 }

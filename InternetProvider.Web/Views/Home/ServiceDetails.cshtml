@@ -21,8 +21,9 @@
         } else {
             divs.sort(function (a, b) {
                 var textA = a.querySelector(".price").textContent;
+                var numA = parseInt(textA.substring(11, textA.length-3));
                 var textB = b.querySelector(".price").textContent;
-                console.log(numA + " " + numB);
+                 var numB = parseInt(textB.substring(11, textB.length-3));
                 return (numA < numB) ? -1 : (numA > numB) ? 1 : 0;
             });
         }
@@ -87,4 +88,9 @@
         <button type="submit" class="btn btn-primary">Сохранить тарифы в PDF</button>
     }
 </div>
+<script type="text/javascript">
+    (function () {
+        Sort("az");
+    }());
+</script>
 
